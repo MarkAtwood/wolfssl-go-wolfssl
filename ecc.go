@@ -61,6 +61,14 @@ type Ecc_key = C.struct_ecc_key
 
 const ECC_SECP256R1 = int(C.ECC_SECP256R1)
 
+// WC_ECC_P256_PRIVATE_KEY_SIZE is the size in bytes of a P-256 private key
+// scalar (the 32-byte big-endian integer d).
+const WC_ECC_P256_PRIVATE_KEY_SIZE = 32
+
+// WC_ECC_P256_PUBLIC_KEY_SIZE is the size in bytes of an uncompressed P-256
+// public key point (0x04 || 32-byte X || 32-byte Y = 65 bytes).
+const WC_ECC_P256_PUBLIC_KEY_SIZE = 65
+
 func Wc_ecc_init(key *C.struct_ecc_key) int {
     return int(C.wc_ecc_init(key))
 }
