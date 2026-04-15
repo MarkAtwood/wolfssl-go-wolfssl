@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "go_wolfssl",
+  "project_id": "46cccfb9-4f81-4536-869b-9014c37574c0"
+}
