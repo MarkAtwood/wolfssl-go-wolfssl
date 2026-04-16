@@ -20,6 +20,86 @@ bd dolt push              # push beads to remote (always at session end)
 
 ---
 
+## API Style: Thin C Wrapper — Non-Negotiable
+
+**This is a deliberate design decision. Do not second-guess it.**
+
+This library is a thin CGO binding that stays close to the wolfSSL C API surface.
+It is NOT a Go-idiomatic crypto library. Do not implement `hash.Hash`, `cipher.AEAD`,
+`cipher.Block`, or any other standard interface. Do not return `error`. Do not hide
+C types behind opaque Go structs.
+
+### Rules (every new file must follow all of these)
+
+**Return type: `int`, always**
+```go
+// CORRECT
+func Wc_Sha3_256Update(sha3 *C.struct_wc_Sha3, in []byte, inSz int) int {
+    ...
+    return int(C.wc_Sha3_256Update(sha3, ...))
+}
+
+// WRONG — do not do this
+func (h *SHA3) Write(p []byte) (int, error) { ... }
+```
+
+**Type aliases, not opaque wrappers**
+```go
+// CORRECT — matches existing pattern
+type Sha3 = C.struct_wc_Sha3
+
+// WRONG — do not wrap in a Go struct
+type SHA3 struct { inner *C.struct_wc_Sha3 }
+```
+
+**Function naming: match the C name with Go capitalization**
+
+| C layer | Prefix | Example |
+|---|---|---|
+| wolfcrypt (`wc_*`) | `Wc_` | `Wc_Ed25519Sign`, `Wc_RsaPublicEncrypt` |
+| TLS/SSL (`wolfSSL_*`) | `WolfSSL_` | `WolfSSL_CTX_UseALPN` |
+| OpenSSL-compat (`wolfSSL_X509_*`) | `wolfSSL_` | `wolfSSL_X509_get_ext_d2i` |
+
+**Separate `sz` parameter for lengths**
+
+Follow existing code: pass both the slice and its relevant length as separate arguments
+when the C function takes a `word32` length. Validate `sz <= len(slice)` before the C call.
+
+```go
+// CORRECT — matches existing pattern in hmac.go, aes.go
+func Wc_Ed25519SignMsg(key *C.struct_ed25519_key, msg []byte, msgSz int,
+                       sig []byte, sigSz *int) int {
+    if msgSz < 0 || msgSz > len(msg) { return BAD_FUNC_ARG }
+    ...
+}
+```
+
+**Lifecycle: manual Init/Free, no constructors**
+```go
+// CORRECT — caller manages lifecycle, matches existing pattern
+func Wc_Ed25519Init(key *C.struct_ed25519_key) int { ... }
+func Wc_Ed25519Free(key *C.struct_ed25519_key)     { ... }
+
+// WRONG — do not hide lifecycle in a constructor
+func NewEd25519Key() (*Ed25519Key, error) { ... }
+```
+
+**No interface implementations**
+
+Do not implement `hash.Hash`, `cipher.AEAD`, `cipher.Block`, `cipher.BlockMode`,
+`io.Reader`, `io.Writer`, `io.Closer`, or any other interface. If a caller wants
+a stdlib-compatible wrapper, that is a separate package.
+
+### What "consistent with existing" does NOT mean
+
+- It does not mean copying bugs. The existing code has known issues (TODO comments,
+  a fake `heap []byte` parameter in `Wc_AesInit` that is always nil). Do not replicate
+  those specific mistakes.
+- It means: same return types, same naming convention, same type-alias pattern, same
+  sz-alongside-slice convention, same #else stub pattern.
+
+---
+
 ## Sources of Truth
 
 Before wrapping any C function, read its header. Always prefer the local copy over
