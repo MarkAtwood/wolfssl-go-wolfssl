@@ -228,8 +228,10 @@ func Wc_ecc_sign_hash_ex(in []byte, inLen int, rng *C.struct_WC_RNG, key *C.stru
 		(*C.uchar)(unsafe.Pointer(&rBuf[0])), &cRLen,
 		(*C.uchar)(unsafe.Pointer(&sBuf[0])), &cSLen,
 	))
-	*rLen = int(cRLen)
-	*sLen = int(cSLen)
+	if ret == 0 {
+		*rLen = int(cRLen)
+		*sLen = int(cSLen)
+	}
 	return ret
 }
 
@@ -256,7 +258,9 @@ func Wc_ecc_verify_hash_ex(rBuf []byte, rLen int, sBuf []byte, sLen int,
 		(*C.uchar)(unsafe.Pointer(&hash[0])), C.word32(hashLen),
 		&cRes, key,
 	))
-	*res = int(cRes)
+	if ret == 0 {
+		*res = int(cRes)
+	}
 	return ret
 }
 
@@ -273,7 +277,9 @@ func Wc_ecc_rs_to_sig(r, s string, out []byte, outLen *int) int {
 	defer C.free(unsafe.Pointer(cS))
 	cOutLen := C.word32(*outLen)
 	ret := int(C.wc_ecc_rs_to_sig_stub(cR, cS, (*C.uchar)(unsafe.Pointer(&out[0])), &cOutLen))
-	*outLen = int(cOutLen)
+	if ret == 0 {
+		*outLen = int(cOutLen)
+	}
 	return ret
 }
 
@@ -300,8 +306,10 @@ func Wc_ecc_sig_to_rs(sig []byte, sigLen int, r []byte, rLen *int, s []byte, sLe
 		(*C.uchar)(unsafe.Pointer(&r[0])), &cRLen,
 		(*C.uchar)(unsafe.Pointer(&s[0])), &cSLen,
 	))
-	*rLen = int(cRLen)
-	*sLen = int(cSLen)
+	if ret == 0 {
+		*rLen = int(cRLen)
+		*sLen = int(cSLen)
+	}
 	return ret
 }
 

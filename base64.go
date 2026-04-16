@@ -56,66 +56,74 @@ import "unsafe"
 // Base64_Decode decodes standard Base64 data from in into out.
 // outLen must point to the capacity of out on entry; on success it is
 // updated to the number of bytes written.
+// outLen is updated even on error to reflect the number of bytes written
+// before the failure.
 // Returns 0 on success, negative on error.
 func Base64_Decode(in []byte, out []byte, outLen *int) int {
-    if len(in) == 0 || len(out) == 0 || outLen == nil {
-        return BAD_FUNC_ARG
-    }
-    cOutLen := C.word32(*outLen)
-    ret := int(C.Base64_Decode(
-        (*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
-        (*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
-    *outLen = int(cOutLen)
-    return ret
+	if len(in) == 0 || len(out) == 0 || outLen == nil {
+		return BAD_FUNC_ARG
+	}
+	cOutLen := C.word32(*outLen)
+	ret := int(C.Base64_Decode(
+		(*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
+		(*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
+	*outLen = int(cOutLen)
+	return ret
 }
 
 // Base64_Encode encodes in into standard Base64 (with newlines) and
 // writes to out.  outLen must point to the capacity of out on entry;
 // on success it is updated to the number of bytes written.
+// outLen is updated even on error to reflect the number of bytes written
+// before the failure.
 // Returns 0 on success, negative on error.  Returns -174 when wolfSSL
 // was built without WOLFSSL_BASE64_ENCODE.
 func Base64_Encode(in []byte, out []byte, outLen *int) int {
-    if len(in) == 0 || len(out) == 0 || outLen == nil {
-        return BAD_FUNC_ARG
-    }
-    cOutLen := C.word32(*outLen)
-    ret := int(C.wc_go_Base64_Encode(
-        (*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
-        (*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
-    *outLen = int(cOutLen)
-    return ret
+	if len(in) == 0 || len(out) == 0 || outLen == nil {
+		return BAD_FUNC_ARG
+	}
+	cOutLen := C.word32(*outLen)
+	ret := int(C.wc_go_Base64_Encode(
+		(*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
+		(*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
+	*outLen = int(cOutLen)
+	return ret
 }
 
 // Base64_EncodeEsc encodes in into Base64 using escape-sequence line
 // endings.  outLen must point to the capacity of out on entry; on
 // success it is updated to the number of bytes written.
+// outLen is updated even on error to reflect the number of bytes written
+// before the failure.
 // Returns 0 on success, negative on error.  Returns -174 when wolfSSL
 // was built without WOLFSSL_BASE64_ENCODE.
 func Base64_EncodeEsc(in []byte, out []byte, outLen *int) int {
-    if len(in) == 0 || len(out) == 0 || outLen == nil {
-        return BAD_FUNC_ARG
-    }
-    cOutLen := C.word32(*outLen)
-    ret := int(C.wc_go_Base64_EncodeEsc(
-        (*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
-        (*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
-    *outLen = int(cOutLen)
-    return ret
+	if len(in) == 0 || len(out) == 0 || outLen == nil {
+		return BAD_FUNC_ARG
+	}
+	cOutLen := C.word32(*outLen)
+	ret := int(C.wc_go_Base64_EncodeEsc(
+		(*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
+		(*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
+	*outLen = int(cOutLen)
+	return ret
 }
 
 // Base64_Encode_NoNl encodes in into Base64 with no line endings.
 // outLen must point to the capacity of out on entry; on success it is
 // updated to the number of bytes written.
+// outLen is updated even on error to reflect the number of bytes written
+// before the failure.
 // Returns 0 on success, negative on error.  Returns -174 when wolfSSL
 // was built without WOLFSSL_BASE64_ENCODE.
 func Base64_Encode_NoNl(in []byte, out []byte, outLen *int) int {
-    if len(in) == 0 || len(out) == 0 || outLen == nil {
-        return BAD_FUNC_ARG
-    }
-    cOutLen := C.word32(*outLen)
-    ret := int(C.wc_go_Base64_Encode_NoNl(
-        (*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
-        (*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
-    *outLen = int(cOutLen)
-    return ret
+	if len(in) == 0 || len(out) == 0 || outLen == nil {
+		return BAD_FUNC_ARG
+	}
+	cOutLen := C.word32(*outLen)
+	ret := int(C.wc_go_Base64_Encode_NoNl(
+		(*C.byte)(unsafe.Pointer(&in[0])), C.word32(len(in)),
+		(*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
+	*outLen = int(cOutLen)
+	return ret
 }

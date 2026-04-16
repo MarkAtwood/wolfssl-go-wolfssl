@@ -210,7 +210,9 @@ func Wc_CreatePKCS8Key(out []byte, outSz *int, key []byte, keySz int, algoID int
 		(*C.uchar)(unsafe.Pointer(&key[0])), C.word32(keySz),
 		C.int(algoID),
 		curvePtr, C.word32(oidSz)))
-	*outSz = int(cOutSz)
+	if ret == 0 || ret == LENGTH_ONLY_E {
+		*outSz = int(cOutSz)
+	}
 	return ret
 }
 
@@ -250,6 +252,9 @@ func Wc_EncryptPKCS8Key(key []byte, keySz int, out []byte, outSz *int, password 
 	if len(key) == 0 {
 		return BAD_FUNC_ARG
 	}
+	if keySz == 0 {
+		return BAD_FUNC_ARG
+	}
 
 	cOutSz := C.word32(*outSz)
 
@@ -273,7 +278,9 @@ func Wc_EncryptPKCS8Key(key []byte, keySz int, out []byte, outSz *int, password 
 		C.int(vPKCS), C.int(pbeOid), C.int(encAlgId),
 		saltPtr, C.word32(saltSz), C.int(itt),
 		rng, heap))
-	*outSz = int(cOutSz)
+	if ret == 0 || ret == LENGTH_ONLY_E {
+		*outSz = int(cOutSz)
+	}
 	return ret
 }
 
@@ -344,6 +351,9 @@ func Wc_CreateEncryptedPKCS8Key(key []byte, keySz int, out []byte, outSz *int, p
 	if len(key) == 0 {
 		return BAD_FUNC_ARG
 	}
+	if keySz == 0 {
+		return BAD_FUNC_ARG
+	}
 
 	cOutSz := C.word32(*outSz)
 
@@ -367,6 +377,8 @@ func Wc_CreateEncryptedPKCS8Key(key []byte, keySz int, out []byte, outSz *int, p
 		C.int(vPKCS), C.int(pbeOid), C.int(encAlgId),
 		saltPtr, C.word32(saltSz), C.int(itt),
 		rng, heap))
-	*outSz = int(cOutSz)
+	if ret == 0 || ret == LENGTH_ONLY_E {
+		*outSz = int(cOutSz)
+	}
 	return ret
 }

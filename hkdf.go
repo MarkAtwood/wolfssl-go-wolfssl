@@ -64,7 +64,7 @@ package wolfSSL
 // #endif /* HAVE_HKDF */
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 // Wc_HKDF_Extract performs the HKDF extract phase (RFC 5869 §2.2).
@@ -73,24 +73,30 @@ import (
 // ikm is the input keying material.
 // out receives the pseudorandom key (PRK); must be at least WC_MAX_DIGEST_SIZE bytes.
 func Wc_HKDF_Extract(hashType int, salt []byte, saltSz int, ikm []byte, ikmSz int, out []byte) int {
-    if saltSz < 0 || saltSz > len(salt) { return BAD_FUNC_ARG }
-    if ikmSz < 0 || ikmSz > len(ikm)   { return BAD_FUNC_ARG }
-    if len(out) == 0                     { return BAD_FUNC_ARG }
+	if saltSz < 0 || saltSz > len(salt) {
+		return BAD_FUNC_ARG
+	}
+	if ikmSz < 0 || ikmSz > len(ikm) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) == 0 {
+		return BAD_FUNC_ARG
+	}
 
-    var saltPtr *C.uchar
-    if len(salt) > 0 {
-        saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
-    }
-    var ikmPtr *C.uchar
-    if len(ikm) > 0 {
-        ikmPtr = (*C.uchar)(unsafe.Pointer(&ikm[0]))
-    }
-    return int(C.wc_HKDF_Extract_shim(
-        C.int(hashType),
-        saltPtr, C.uint(saltSz),
-        ikmPtr,  C.uint(ikmSz),
-        (*C.uchar)(unsafe.Pointer(&out[0])),
-    ))
+	var saltPtr *C.uchar
+	if len(salt) > 0 {
+		saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
+	}
+	var ikmPtr *C.uchar
+	if len(ikm) > 0 {
+		ikmPtr = (*C.uchar)(unsafe.Pointer(&ikm[0]))
+	}
+	return int(C.wc_HKDF_Extract_shim(
+		C.int(hashType),
+		saltPtr, C.uint(saltSz),
+		ikmPtr, C.uint(ikmSz),
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+	))
 }
 
 // Wc_HKDF_Expand performs the HKDF expand phase (RFC 5869 §2.3).
@@ -99,19 +105,27 @@ func Wc_HKDF_Extract(hashType int, salt []byte, saltSz int, ikm []byte, ikmSz in
 // info is optional context and application-specific information (may be empty).
 // out receives the output keying material; outSz bytes are written.
 func Wc_HKDF_Expand(hashType int, prk []byte, prkSz int, info []byte, infoSz int, out []byte, outSz int) int {
-    if prkSz < 0 || prkSz > len(prk)   { return BAD_FUNC_ARG }
-    if infoSz < 0 || infoSz > len(info) { return BAD_FUNC_ARG }
-    if outSz < 0 || outSz > len(out)    { return BAD_FUNC_ARG }
-    if len(prk) == 0 || len(out) == 0   { return BAD_FUNC_ARG }
+	if prkSz < 0 || prkSz > len(prk) {
+		return BAD_FUNC_ARG
+	}
+	if infoSz < 0 || infoSz > len(info) {
+		return BAD_FUNC_ARG
+	}
+	if outSz < 0 || outSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	if len(prk) == 0 || len(out) == 0 {
+		return BAD_FUNC_ARG
+	}
 
-    var infoPtr *C.uchar
-    if len(info) > 0 {
-        infoPtr = (*C.uchar)(unsafe.Pointer(&info[0]))
-    }
-    return int(C.wc_HKDF_Expand_shim(
-        C.int(hashType),
-        (*C.uchar)(unsafe.Pointer(&prk[0])), C.uint(prkSz),
-        infoPtr, C.uint(infoSz),
-        (*C.uchar)(unsafe.Pointer(&out[0])), C.uint(outSz),
-    ))
+	var infoPtr *C.uchar
+	if len(info) > 0 {
+		infoPtr = (*C.uchar)(unsafe.Pointer(&info[0]))
+	}
+	return int(C.wc_HKDF_Expand_shim(
+		C.int(hashType),
+		(*C.uchar)(unsafe.Pointer(&prk[0])), C.uint(prkSz),
+		infoPtr, C.uint(infoSz),
+		(*C.uchar)(unsafe.Pointer(&out[0])), C.uint(outSz),
+	))
 }

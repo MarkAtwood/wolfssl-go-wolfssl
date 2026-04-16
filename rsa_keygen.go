@@ -93,7 +93,7 @@ func Wc_RsaExportKey(key *C.struct_RsaKey,
 	if *qSz < 0 || *qSz > len(q) {
 		return BAD_FUNC_ARG
 	}
-	if len(e) == 0 || len(n) == 0 || len(d) == 0 || len(p) == 0 || len(q) == 0 {
+	if len(e) == 0 || len(n) == 0 {
 		return BAD_FUNC_ARG
 	}
 
@@ -103,13 +103,24 @@ func Wc_RsaExportKey(key *C.struct_RsaKey,
 	cPSz := C.word32(*pSz)
 	cQSz := C.word32(*qSz)
 
+	var dPtr, pPtr, qPtr *C.uchar
+	if len(d) > 0 {
+		dPtr = (*C.uchar)(unsafe.Pointer(&d[0]))
+	}
+	if len(p) > 0 {
+		pPtr = (*C.uchar)(unsafe.Pointer(&p[0]))
+	}
+	if len(q) > 0 {
+		qPtr = (*C.uchar)(unsafe.Pointer(&q[0]))
+	}
+
 	ret := int(C.go_wc_RsaExportKey(
 		key,
 		(*C.uchar)(unsafe.Pointer(&e[0])), &cESz,
 		(*C.uchar)(unsafe.Pointer(&n[0])), &cNSz,
-		(*C.uchar)(unsafe.Pointer(&d[0])), &cDSz,
-		(*C.uchar)(unsafe.Pointer(&p[0])), &cPSz,
-		(*C.uchar)(unsafe.Pointer(&q[0])), &cQSz))
+		dPtr, &cDSz,
+		pPtr, &cPSz,
+		qPtr, &cQSz))
 
 	if ret == 0 {
 		*eSz = int(cESz)

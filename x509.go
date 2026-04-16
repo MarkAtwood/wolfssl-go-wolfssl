@@ -62,8 +62,8 @@ package wolfSSL
 // #endif
 import "C"
 import (
-    "sync"
-    "unsafe"
+	"sync"
+	"unsafe"
 )
 
 var bioBufMap sync.Map
@@ -124,13 +124,19 @@ func WolfSSL_X509_verify_cert(ctx *C.WOLFSSL_X509_STORE_CTX) int {
 }
 
 func WolfSSL_X509_load_certificate_buffer(buff []byte, buffSz int, certType int) *C.WOLFSSL_X509 {
-	if buffSz < 0 || buffSz > len(buff) || len(buff) == 0 { return nil }
+	if buffSz < 0 || buffSz > len(buff) || len(buff) == 0 {
+		return nil
+	}
 	return C.wolfSSL_X509_load_certificate_buffer((*C.byte)(unsafe.Pointer(&buff[0])), C.int(buffSz), C.int(certType))
 }
 
 func WolfSSL_X509_get_pubkey_buffer(cert *WOLFSSL_X509, out []byte, outLen *int) int {
-	if outLen == nil { return BAD_FUNC_ARG }
-	if len(out) > 0 && (*outLen < 0 || *outLen > len(out)) { return BAD_FUNC_ARG }
+	if outLen == nil {
+		return BAD_FUNC_ARG
+	}
+	if len(out) > 0 && (*outLen < 0 || *outLen > len(out)) {
+		return BAD_FUNC_ARG
+	}
 	var outPtr *C.uchar
 	if len(out) > 0 {
 		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
@@ -187,29 +193,31 @@ func WolfSSL_ASN1_get_object(in *[]byte, objLen *int, tag *int, cls *int, inLen 
 	if len(*in) == 0 || inLen < 0 || inLen > len(*in) {
 		return -1
 	}
-	
+
 	cInPtr := (*C.uchar)(C.malloc(C.size_t(unsafe.Sizeof(uintptr(0)))))
 	defer C.free(unsafe.Pointer(cInPtr))
-	
+
 	inPtr := (*C.uchar)(unsafe.Pointer(&(*in)[0]))
 	*(**C.uchar)(unsafe.Pointer(cInPtr)) = inPtr
-	
+
 	var cLen C.long
 	var cTag C.int
 	var cCls C.int
-	
+
 	result := int(C.wolfSSL_ASN1_get_object((**C.uchar)(unsafe.Pointer(cInPtr)), &cLen, &cTag, &cCls, C.long(inLen)))
-	
+
 	if result >= 0 {
 		newPtr := *(**C.uchar)(unsafe.Pointer(cInPtr))
 		offset := uintptr(unsafe.Pointer(newPtr)) - uintptr(unsafe.Pointer(&(*in)[0]))
-		if offset > uintptr(len(*in)) { return -1 }
+		if offset > uintptr(len(*in)) {
+			return -1
+		}
 		*in = (*in)[offset:]
 		*objLen = int(cLen)
 		*tag = int(cTag)
 		*cls = int(cCls)
 	}
-	
+
 	return result
 }
 
@@ -217,27 +225,29 @@ func WolfSSL_d2i_ASN1_OBJECT(a **WOLFSSL_ASN1_OBJECT, der *[]byte, length int) *
 	if len(*der) == 0 || length < 0 || length > len(*der) {
 		return nil
 	}
-	
+
 	var aPtr **C.struct_WOLFSSL_ASN1_OBJECT
 	if a != nil {
 		aPtr = (**C.struct_WOLFSSL_ASN1_OBJECT)(unsafe.Pointer(a))
 	}
-	
+
 	cDerPtr := (*C.uchar)(C.malloc(C.size_t(unsafe.Sizeof(uintptr(0)))))
 	defer C.free(unsafe.Pointer(cDerPtr))
-	
+
 	derPtr := (*C.uchar)(unsafe.Pointer(&(*der)[0]))
 	*(**C.uchar)(unsafe.Pointer(cDerPtr)) = derPtr
-	
+
 	result := (*WOLFSSL_ASN1_OBJECT)(C.wolfSSL_d2i_ASN1_OBJECT(aPtr, (**C.uchar)(unsafe.Pointer(cDerPtr)), C.long(length)))
-	
+
 	if result != nil {
 		newPtr := *(**C.uchar)(unsafe.Pointer(cDerPtr))
 		offset := uintptr(unsafe.Pointer(newPtr)) - uintptr(unsafe.Pointer(&(*der)[0]))
-		if offset > uintptr(len(*der)) { return nil }
+		if offset > uintptr(len(*der)) {
+			return nil
+		}
 		*der = (*der)[offset:]
 	}
-	
+
 	return result
 }
 

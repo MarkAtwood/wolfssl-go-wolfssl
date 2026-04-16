@@ -50,20 +50,26 @@ import "unsafe"
 // given devId.  cb must be a C function pointer of type
 // CryptoDevCallbackFunc, passed as an unsafe.Pointer.  ctx is an arbitrary
 // context pointer forwarded to the callback on each call.
+//
+// ctx must be a C pointer or a value obtained from cgo.NewHandle — do not
+// pass a raw Go heap pointer.  wolfSSL retains ctx in its device table and
+// passes it back on every callback invocation; a Go heap pointer without a
+// matching runtime.Pinner violates CGO pointer-passing rules.
+//
 // Returns 0 on success, negative on error.  Returns -174 when wolfSSL was
 // built without WOLF_CRYPTO_CB.
 func Wc_CryptoCb_RegisterDevice(devId int, cb unsafe.Pointer, ctx unsafe.Pointer) int {
-    return int(C.wc_go_CryptoCb_RegisterDevice(C.int(devId), cb, ctx))
+	return int(C.wc_go_CryptoCb_RegisterDevice(C.int(devId), cb, ctx))
 }
 
 // Wc_CryptoCb_UnRegisterDevice removes the hardware crypto callback
 // registered for devId.
 func Wc_CryptoCb_UnRegisterDevice(devId int) {
-    C.wc_go_CryptoCb_UnRegisterDevice(C.int(devId))
+	C.wc_go_CryptoCb_UnRegisterDevice(C.int(devId))
 }
 
 // Wc_CryptoCb_DefaultDevID returns the default crypto callback device ID, or
 // -174 when wolfSSL was built without WOLF_CRYPTO_CB.
 func Wc_CryptoCb_DefaultDevID() int {
-    return int(C.wc_go_CryptoCb_DefaultDevID())
+	return int(C.wc_go_CryptoCb_DefaultDevID())
 }

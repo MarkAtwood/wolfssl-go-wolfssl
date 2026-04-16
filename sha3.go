@@ -160,7 +160,7 @@ package wolfSSL
 // #endif
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 type Wc_Sha3 = C.struct_wc_Sha3
@@ -173,157 +173,179 @@ const WC_SHA3_512_DIGEST_SIZE = int(C.WC_SHA3_512_DIGEST_SIZE)
 // SHA-3 224
 
 func Wc_InitSha3_224(sha3 *C.struct_wc_Sha3, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_go_InitSha3_224(sha3, heap, C.int(devId)))
+	return int(C.wc_go_InitSha3_224(sha3, heap, C.int(devId)))
 }
 
 func Wc_Sha3_224Update(sha3 *C.struct_wc_Sha3, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha3_224_Update(sha3, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha3_224_Update(sha3, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha3_224Final(sha3 *C.struct_wc_Sha3, out []byte) int {
-    if len(out) < WC_SHA3_224_DIGEST_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_go_Sha3_224_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA3_224_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_go_Sha3_224_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 func Wc_Sha3_224Free(sha3 *C.struct_wc_Sha3) {
-    C.wc_go_Sha3_224_Free(sha3)
+	C.wc_go_Sha3_224_Free(sha3)
 }
 
 // SHA-3 256
 
 func Wc_InitSha3_256(sha3 *C.struct_wc_Sha3, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_go_InitSha3_256(sha3, heap, C.int(devId)))
+	return int(C.wc_go_InitSha3_256(sha3, heap, C.int(devId)))
 }
 
 func Wc_Sha3_256Update(sha3 *C.struct_wc_Sha3, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha3_256_Update(sha3, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha3_256_Update(sha3, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha3_256Final(sha3 *C.struct_wc_Sha3, out []byte) int {
-    if len(out) < WC_SHA3_256_DIGEST_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_go_Sha3_256_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA3_256_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_go_Sha3_256_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 func Wc_Sha3_256Free(sha3 *C.struct_wc_Sha3) {
-    C.wc_go_Sha3_256_Free(sha3)
+	C.wc_go_Sha3_256_Free(sha3)
 }
 
 // SHA-3 384
 
 func Wc_InitSha3_384(sha3 *C.struct_wc_Sha3, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_go_InitSha3_384(sha3, heap, C.int(devId)))
+	return int(C.wc_go_InitSha3_384(sha3, heap, C.int(devId)))
 }
 
 func Wc_Sha3_384Update(sha3 *C.struct_wc_Sha3, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha3_384_Update(sha3, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha3_384_Update(sha3, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha3_384Final(sha3 *C.struct_wc_Sha3, out []byte) int {
-    if len(out) < WC_SHA3_384_DIGEST_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_go_Sha3_384_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA3_384_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_go_Sha3_384_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 func Wc_Sha3_384Free(sha3 *C.struct_wc_Sha3) {
-    C.wc_go_Sha3_384_Free(sha3)
+	C.wc_go_Sha3_384_Free(sha3)
 }
 
 // SHA-3 512
 
 func Wc_InitSha3_512(sha3 *C.struct_wc_Sha3, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_go_InitSha3_512(sha3, heap, C.int(devId)))
+	return int(C.wc_go_InitSha3_512(sha3, heap, C.int(devId)))
 }
 
 func Wc_Sha3_512Update(sha3 *C.struct_wc_Sha3, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha3_512_Update(sha3, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha3_512_Update(sha3, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha3_512Final(sha3 *C.struct_wc_Sha3, out []byte) int {
-    if len(out) < WC_SHA3_512_DIGEST_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_go_Sha3_512_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA3_512_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_go_Sha3_512_Final(sha3, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 func Wc_Sha3_512Free(sha3 *C.struct_wc_Sha3) {
-    C.wc_go_Sha3_512_Free(sha3)
+	C.wc_go_Sha3_512_Free(sha3)
 }
 
 // SHAKE-128
 
 func Wc_InitShake128(shake *C.struct_wc_Sha3, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_go_InitShake128(shake, heap, C.int(devId)))
+	return int(C.wc_go_InitShake128(shake, heap, C.int(devId)))
 }
 
 func Wc_Shake128Update(shake *C.struct_wc_Sha3, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Shake128_Update(shake, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Shake128_Update(shake, sanIn, C.word32(inSz)))
 }
 
 func Wc_Shake128Final(shake *C.struct_wc_Sha3, out []byte, hashSz int) int {
-    if hashSz < 0 || hashSz > len(out) { return BAD_FUNC_ARG }
-    if len(out) == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_go_Shake128_Final(shake, (*C.uchar)(unsafe.Pointer(&out[0])), C.word32(hashSz)))
+	if hashSz <= 0 || hashSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_go_Shake128_Final(shake, (*C.uchar)(unsafe.Pointer(&out[0])), C.word32(hashSz)))
 }
 
 func Wc_Shake128Free(shake *C.struct_wc_Sha3) {
-    C.wc_go_Shake128_Free(shake)
+	C.wc_go_Shake128_Free(shake)
 }
 
 // SHAKE-256
 
 func Wc_InitShake256(shake *C.struct_wc_Sha3, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_go_InitShake256(shake, heap, C.int(devId)))
+	return int(C.wc_go_InitShake256(shake, heap, C.int(devId)))
 }
 
 func Wc_Shake256Update(shake *C.struct_wc_Sha3, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Shake256_Update(shake, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Shake256_Update(shake, sanIn, C.word32(inSz)))
 }
 
 func Wc_Shake256Final(shake *C.struct_wc_Sha3, out []byte, hashSz int) int {
-    if hashSz < 0 || hashSz > len(out) { return BAD_FUNC_ARG }
-    if len(out) == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_go_Shake256_Final(shake, (*C.uchar)(unsafe.Pointer(&out[0])), C.word32(hashSz)))
+	if hashSz <= 0 || hashSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_go_Shake256_Final(shake, (*C.uchar)(unsafe.Pointer(&out[0])), C.word32(hashSz)))
 }
 
 func Wc_Shake256Free(shake *C.struct_wc_Sha3) {
-    C.wc_go_Shake256_Free(shake)
+	C.wc_go_Shake256_Free(shake)
 }

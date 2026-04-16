@@ -19,6 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1335, USA
  */
 
+// Package wolfSSL wraps the wolfSSL C library.
+//
+// RC4 (ARC4) is a broken stream cipher and must not be used in new protocols.
+// It is provided only for legacy interoperability.
 package wolfSSL
 
 // #cgo CFLAGS: -g -Wall -I/usr/include -I/usr/include/wolfssl -I/usr/local/include -I/usr/local/include/wolfssl
@@ -48,27 +52,45 @@ const RC4_KEY_SIZE = int(C.RC4_KEY_SIZE)
 
 type Arc4 = C.Arc4
 
+// Wc_Arc4Init initialises an Arc4 context.
+// Security warning: RC4 is cryptographically broken; use only for legacy interoperability.
 func Wc_Arc4Init(arc4 *C.Arc4, devId int) int {
-    return int(C.wc_Arc4Init(arc4, unsafe.Pointer(nil), C.int(devId)))
+	return int(C.wc_Arc4Init(arc4, unsafe.Pointer(nil), C.int(devId)))
 }
 
+// Wc_Arc4Free releases resources held by an Arc4 context.
+// Security warning: RC4 is cryptographically broken; use only for legacy interoperability.
 func Wc_Arc4Free(arc4 *C.Arc4) {
-    C.wc_Arc4Free(arc4)
+	C.wc_Arc4Free(arc4)
 }
 
+// Wc_Arc4SetKey sets the RC4 key on arc4. length must be <= len(key).
+// Security warning: RC4 is cryptographically broken; use only for legacy interoperability.
 func Wc_Arc4SetKey(arc4 *C.Arc4, key []byte, length int) int {
-    if length < 0 || length > len(key) { return BAD_FUNC_ARG }
-    if len(key) == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_Arc4SetKey(arc4, (*C.uchar)(unsafe.Pointer(&key[0])),
-               C.word32(length)))
+	if length < 0 || length > len(key) {
+		return BAD_FUNC_ARG
+	}
+	if len(key) == 0 {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Arc4SetKey(arc4, (*C.uchar)(unsafe.Pointer(&key[0])),
+		C.word32(length)))
 }
 
+// Wc_Arc4Process encrypts or decrypts length bytes from in into out.
+// Security warning: RC4 is cryptographically broken; use only for legacy interoperability.
 func Wc_Arc4Process(arc4 *C.Arc4, out []byte, in []byte, length int) int {
-    if length < 0 || length > len(in) { return BAD_FUNC_ARG }
-    if len(out) < length { return BAD_FUNC_ARG }
-    if length == 0 { return 0 }
-    return int(C.wc_Arc4Process(arc4,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(length)))
+	if length < 0 || length > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < length {
+		return BAD_FUNC_ARG
+	}
+	if length == 0 {
+		return 0
+	}
+	return int(C.wc_Arc4Process(arc4,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.word32(length)))
 }

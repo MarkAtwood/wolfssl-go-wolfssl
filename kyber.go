@@ -256,7 +256,15 @@ func Wc_MlKemKey_PrivateKeySize(key *C.MlKemKey, length *int) int {
 // ct must be at least CipherTextSize bytes; ss must be at least SharedSecretSize bytes.
 // Returns 0 on success, negative on error.
 func Wc_MlKemKey_Encapsulate(key *C.MlKemKey, ct []byte, ss []byte, rng *C.struct_WC_RNG) int {
-	if len(ct) == 0 || len(ss) == 0 {
+	var ctSz C.word32
+	if ret := int(C.go_wc_MlKemKey_CipherTextSize(key, &ctSz)); ret != 0 {
+		return ret
+	}
+	var ssSz C.word32
+	if ret := int(C.go_wc_MlKemKey_SharedSecretSize(key, &ssSz)); ret != 0 {
+		return ret
+	}
+	if len(ct) < int(ctSz) || len(ss) < int(ssSz) {
 		return BAD_FUNC_ARG
 	}
 	return int(C.go_wc_MlKemKey_Encapsulate(key,
@@ -273,7 +281,14 @@ func Wc_MlKemKey_Decapsulate(key *C.MlKemKey, ss []byte, ct []byte, ctLen int) i
 	if ctLen < 0 || ctLen > len(ct) {
 		return BAD_FUNC_ARG
 	}
-	if len(ss) == 0 || len(ct) == 0 {
+	if len(ct) == 0 {
+		return BAD_FUNC_ARG
+	}
+	var ssSz C.word32
+	if ret := int(C.go_wc_MlKemKey_SharedSecretSize(key, &ssSz)); ret != 0 {
+		return ret
+	}
+	if len(ss) < int(ssSz) {
 		return BAD_FUNC_ARG
 	}
 	return int(C.go_wc_MlKemKey_Decapsulate(key,

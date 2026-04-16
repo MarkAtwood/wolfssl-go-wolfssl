@@ -37,9 +37,11 @@ import "unsafe"
 // WolfSSL_SetLoggingCb installs a custom log callback.  cb must be a C
 // function pointer of type wolfSSL_Logging_cb, passed as an unsafe.Pointer.
 // The callback signature is:
-//   void my_cb(const int logLevel, const char *const logMessage)
+//
+//	void my_cb(const int logLevel, const char *const logMessage)
+//
 // Returns 0 on success, negative on error (e.g. -174 if logging not compiled
 // in).
 func WolfSSL_SetLoggingCb(cb unsafe.Pointer) int {
-    return int(C.wc_go_SetLoggingCb(cb))
+	return int(C.wc_go_SetLoggingCb(cb))
 }

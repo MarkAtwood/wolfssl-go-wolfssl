@@ -28,23 +28,27 @@ import "C"
 import "unsafe"
 
 const BAD_FUNC_ARG = int(C.BAD_FUNC_ARG)
+const LENGTH_ONLY_E = int(C.LENGTH_ONLY_E)
+const MAC_CMP_FAILED_E = int(C.MAC_CMP_FAILED_E)
 
 func ConstantCompare(a, b []byte, length int) int {
-    if length < 0 || length > len(a) || length > len(b) { return 0 }
-    var result byte = 0
-    for i := 0; i < length; i++ {
-        result |= a[i] ^ b[i]
-    }
+	if length < 0 || length > len(a) || length > len(b) {
+		return 0
+	}
+	var result byte = 0
+	for i := 0; i < length; i++ {
+		result |= a[i] ^ b[i]
+	}
 
-    if result == 0 {
-        return 1
-    } else {
-        return 0
-    }
+	if result == 0 {
+		return 1
+	} else {
+		return 0
+	}
 }
 
 func zeroMemory(b []byte) {
-    if len(b) > 0 {
-        C.wc_ForceZero(unsafe.Pointer(&b[0]), C.size_t(len(b)))
-    }
+	if len(b) > 0 {
+		C.wc_ForceZero(unsafe.Pointer(&b[0]), C.size_t(len(b)))
+	}
 }

@@ -139,6 +139,15 @@ package wolfSSL
 // #endif
 // }
 //
+// static int go_wc_curve448_export_private_raw_le(curve448_key* key, byte* out,
+//                                                 word32* outLen) {
+// #ifdef HAVE_CURVE448
+//     return wc_curve448_export_private_raw_ex(key, out, outLen, EC448_LITTLE_ENDIAN);
+// #else
+//     return NOT_COMPILED_IN;
+// #endif
+// }
+//
 // static int go_wc_curve448_export_public(curve448_key* key, byte* out,
 //                                         word32* outLen) {
 // #ifdef HAVE_CURVE448
@@ -315,7 +324,8 @@ func Wc_Curve448ImportPublicRaw(in []byte, inLen int, key *C.struct_curve448_key
 		(*C.byte)(unsafe.Pointer(&in[0])), C.word32(inLen), key))
 }
 
-// Wc_Curve448ExportPrivate exports the raw private key from key into out.
+// Wc_Curve448ExportPrivate exports the raw private key from key into out in
+// big-endian byte order (wolfSSL default).
 // outLen is updated to the actual number of bytes written on success.
 // out must be at least CURVE448_KEY_SIZE bytes.
 // Returns 0 on success, negative on error.
@@ -331,7 +341,8 @@ func Wc_Curve448ExportPrivate(key *C.struct_curve448_key, out []byte, outLen *in
 	return ret
 }
 
-// Wc_Curve448ExportPrivateRaw exports the raw private key from key into out.
+// Wc_Curve448ExportPrivateRaw exports the raw private key from key into out in
+// little-endian byte order (matching all other *Raw export functions).
 // outLen is updated to the actual number of bytes written on success.
 // out must be at least CURVE448_KEY_SIZE bytes.
 // Returns 0 on success, negative on error.
@@ -340,7 +351,7 @@ func Wc_Curve448ExportPrivateRaw(key *C.struct_curve448_key, out []byte, outLen 
 		return BAD_FUNC_ARG
 	}
 	cOutLen := C.word32(len(out))
-	ret := int(C.go_wc_curve448_export_private_raw(key, (*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
+	ret := int(C.go_wc_curve448_export_private_raw_le(key, (*C.byte)(unsafe.Pointer(&out[0])), &cOutLen))
 	if ret == 0 {
 		*outLen = int(cOutLen)
 	}

@@ -167,6 +167,11 @@ func WolfSSL_i2d_PKCS12_bio(bio *WOLFSSL_BIO, pkcs12 *WC_PKCS12) int {
 // On success pkey, cert, and ca are populated with newly-allocated objects
 // that the caller must free. ca may be nil if no CA chain is wanted.
 //
+// psw must contain only ASCII characters. Non-ASCII passwords (including
+// Unicode) are not supported — wolfSSL's C layer does not perform the
+// BMPString/UTF-16BE encoding that PKCS#12 requires for non-ASCII passwords.
+// Passing non-ASCII characters will produce a wrong derived key without error.
+//
 // Returns WOLFSSL_SUCCESS (1) on success, 0 or negative on failure.
 // Requires wolfSSL built with HAVE_PKCS12 and OPENSSL_EXTRA.
 func WolfSSL_PKCS12_parse(pkcs12 *WC_PKCS12, psw string,

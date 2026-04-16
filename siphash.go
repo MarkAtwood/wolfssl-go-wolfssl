@@ -50,44 +50,58 @@ package wolfSSL
 import "C"
 import "unsafe"
 
-const SIPHASH_KEY_SIZE    = int(C.SIPHASH_KEY_SIZE)
-const SIPHASH_MAC_SIZE_8  = int(C.SIPHASH_MAC_SIZE_8)
+const SIPHASH_KEY_SIZE = int(C.SIPHASH_KEY_SIZE)
+const SIPHASH_MAC_SIZE_8 = int(C.SIPHASH_MAC_SIZE_8)
 const SIPHASH_MAC_SIZE_16 = int(C.SIPHASH_MAC_SIZE_16)
 
 type SipHash = C.SipHash
 
 func Wc_InitSipHash(sipHash *C.SipHash, key []byte, outSz int) int {
-    if len(key) < SIPHASH_KEY_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_InitSipHash(sipHash, (*C.uchar)(unsafe.Pointer(&key[0])),
-               C.uchar(outSz)))
+	if len(key) < SIPHASH_KEY_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_InitSipHash(sipHash, (*C.uchar)(unsafe.Pointer(&key[0])),
+		C.uchar(outSz)))
 }
 
 func Wc_SipHashUpdate(sipHash *C.SipHash, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var inPtr *C.uchar
-    if len(in) > 0 {
-        inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    return int(C.wc_SipHashUpdate(sipHash, inPtr, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if len(in) > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_SipHashUpdate(sipHash, inPtr, C.word32(inSz)))
 }
 
 func Wc_SipHashFinal(sipHash *C.SipHash, out []byte, outSz int) int {
-    if len(out) < outSz { return BAD_FUNC_ARG }
-    if len(out) == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_SipHashFinal(sipHash, (*C.uchar)(unsafe.Pointer(&out[0])),
-               C.uchar(outSz)))
+	if len(out) < outSz {
+		return BAD_FUNC_ARG
+	}
+	if len(out) == 0 {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_SipHashFinal(sipHash, (*C.uchar)(unsafe.Pointer(&out[0])),
+		C.uchar(outSz)))
 }
 
 func Wc_SipHash(key []byte, in []byte, inSz int, out []byte, outSz int) int {
-    if len(key) < SIPHASH_KEY_SIZE { return BAD_FUNC_ARG }
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < outSz { return BAD_FUNC_ARG }
-    var inPtr *C.uchar
-    if len(in) > 0 {
-        inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    return int(C.wc_SipHash((*C.uchar)(unsafe.Pointer(&key[0])),
-               inPtr, C.word32(inSz),
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               C.uchar(outSz)))
+	if len(key) < SIPHASH_KEY_SIZE {
+		return BAD_FUNC_ARG
+	}
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < outSz {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if len(in) > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_SipHash((*C.uchar)(unsafe.Pointer(&key[0])),
+		inPtr, C.word32(inSz),
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		C.uchar(outSz)))
 }

@@ -64,7 +64,7 @@ import "unsafe"
 // Returns -174 if WOLFSSL_HAVE_PRF was not compiled in (requires !NO_KDF && !NO_HMAC).
 func Wc_PRF(result []byte, secret []byte, seed []byte, hash int) int {
 	if len(result) == 0 {
-		return -1
+		return BAD_FUNC_ARG
 	}
 	var secretPtr *C.byte
 	if len(secret) > 0 {
@@ -90,7 +90,7 @@ func Wc_PRF(result []byte, secret []byte, seed []byte, hash int) int {
 func Wc_PRF_TLS(digest []byte, secret []byte, label []byte, seed []byte,
 	useAtLeastSha256 int, hashType int) int {
 	if len(digest) == 0 {
-		return -1
+		return BAD_FUNC_ARG
 	}
 	var secretPtr *C.byte
 	if len(secret) > 0 {
@@ -123,7 +123,7 @@ func Wc_PRF_TLS(digest []byte, secret []byte, label []byte, seed []byte,
 func WolfSSL_export_keying_material(ssl *C.struct_WOLFSSL, out []byte,
 	label string, context []byte, useContext int) int {
 	if len(out) == 0 {
-		return -1
+		return BAD_FUNC_ARG
 	}
 	cLabel := C.CString(label)
 	defer C.free(unsafe.Pointer(cLabel))

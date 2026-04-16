@@ -35,6 +35,9 @@ package wolfSSL
 // WOLFSSL_METHOD* wolfTLS_server_method(void)    { return NULL; }
 // WOLFSSL_METHOD* wolfDTLS_server_method(void)   { return NULL; }
 // #endif /* NO_WOLFSSL_SERVER */
+// #if defined(NO_WOLFSSL_CLIENT) && defined(NO_WOLFSSL_SERVER)
+// WOLFSSL_METHOD* wolfSSLv23_method(void) { return NULL; }
+// #endif /* NO_WOLFSSL_CLIENT && NO_WOLFSSL_SERVER */
 // #ifndef WOLFSSL_DTLS
 // WOLFSSL_METHOD* wolfDTLS_client_method(void) { return NULL; }
 // WOLFSSL_METHOD* wolfDTLS_server_method(void) { return NULL; }

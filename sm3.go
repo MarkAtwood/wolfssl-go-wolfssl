@@ -56,34 +56,42 @@ const WC_SM3_DIGEST_SIZE = int(C.WC_SM3_DIGEST_SIZE)
 type Wc_Sm3 = C.struct_wc_Sm3
 
 func Wc_InitSm3(sm3 *C.struct_wc_Sm3, devId int) int {
-    return int(C.wc_InitSm3(sm3, unsafe.Pointer(nil), C.int(devId)))
+	return int(C.wc_InitSm3(sm3, unsafe.Pointer(nil), C.int(devId)))
 }
 
 func Wc_Sm3Update(sm3 *C.struct_wc_Sm3, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var inPtr *C.uchar
-    if len(in) > 0 {
-        inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    return int(C.wc_Sm3Update(sm3, inPtr, C.uint(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if len(in) > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_Sm3Update(sm3, inPtr, C.uint(inSz)))
 }
 
 func Wc_Sm3Final(sm3 *C.struct_wc_Sm3, out []byte) int {
-    if len(out) < WC_SM3_DIGEST_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_Sm3Final(sm3, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SM3_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Sm3Final(sm3, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 func Wc_Sm3Free(sm3 *C.struct_wc_Sm3) {
-    C.wc_Sm3Free(sm3)
+	C.wc_Sm3Free(sm3)
 }
 
 func Wc_Sm3Hash(in []byte, inSz int, out []byte) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < WC_SM3_DIGEST_SIZE { return BAD_FUNC_ARG }
-    var inPtr *C.uchar
-    if len(in) > 0 {
-        inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    return int(C.wc_Sm3Hash(inPtr, C.uint(inSz),
-               (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < WC_SM3_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if len(in) > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_Sm3Hash(inPtr, C.uint(inSz),
+		(*C.uchar)(unsafe.Pointer(&out[0]))))
 }

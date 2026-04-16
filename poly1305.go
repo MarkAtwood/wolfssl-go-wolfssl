@@ -34,7 +34,7 @@ package wolfSSL
 // #endif
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 type Poly1305 = C.struct_Poly1305
@@ -42,78 +42,78 @@ type Poly1305 = C.struct_Poly1305
 const POLY1305_DIGEST_SIZE = int(C.POLY1305_DIGEST_SIZE)
 
 func Wc_Poly1305SetKey(poly1305 *C.struct_Poly1305, key []byte) int {
-    if len(key) < 32 {
-        return BAD_FUNC_ARG
-    }
-    return int(C.wc_Poly1305SetKey(poly1305, (*C.uchar)(unsafe.Pointer(&key[0])), C.word32(len(key))))
+	if len(key) < 32 {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Poly1305SetKey(poly1305, (*C.uchar)(unsafe.Pointer(&key[0])), C.word32(len(key))))
 }
 
 func Wc_Poly1305Update(poly1305 *C.struct_Poly1305, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.uchar
-    if inSz > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_Poly1305Update(poly1305, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if inSz > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_Poly1305Update(poly1305, sanIn, C.word32(inSz)))
 }
 
 func Wc_Poly1305Final(poly1305 *C.struct_Poly1305, out []byte) int {
-    if len(out) < POLY1305_DIGEST_SIZE {
-        return BAD_FUNC_ARG
-    }
-    return int(C.wc_Poly1305Final(poly1305, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < POLY1305_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Poly1305Final(poly1305, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 func Wc_Poly1305_MAC(poly1305 *C.struct_Poly1305, additional []byte, addSz int,
-    input []byte, inSz int, tag []byte, tagSz int) int {
-    if addSz < 0 || addSz > len(additional) {
-        return BAD_FUNC_ARG
-    }
-    if inSz < 0 || inSz > len(input) {
-        return BAD_FUNC_ARG
-    }
-    if tagSz < 0 || tagSz > len(tag) {
-        return BAD_FUNC_ARG
-    }
-    if tagSz < POLY1305_DIGEST_SIZE {
-        return BAD_FUNC_ARG
-    }
-    var sanAdditional *C.uchar
-    if addSz > 0 {
-        sanAdditional = (*C.uchar)(unsafe.Pointer(&additional[0]))
-    } else {
-        sanAdditional = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    var sanInput *C.uchar
-    if inSz > 0 {
-        sanInput = (*C.uchar)(unsafe.Pointer(&input[0]))
-    } else {
-        sanInput = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_Poly1305_MAC(poly1305, sanAdditional, C.word32(addSz),
-        sanInput, C.word32(inSz),
-        (*C.uchar)(unsafe.Pointer(&tag[0])), C.word32(tagSz)))
+	input []byte, inSz int, tag []byte, tagSz int) int {
+	if addSz < 0 || addSz > len(additional) {
+		return BAD_FUNC_ARG
+	}
+	if inSz < 0 || inSz > len(input) {
+		return BAD_FUNC_ARG
+	}
+	if tagSz < 0 || tagSz > len(tag) {
+		return BAD_FUNC_ARG
+	}
+	if tagSz < POLY1305_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	var sanAdditional *C.uchar
+	if addSz > 0 {
+		sanAdditional = (*C.uchar)(unsafe.Pointer(&additional[0]))
+	} else {
+		sanAdditional = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	var sanInput *C.uchar
+	if inSz > 0 {
+		sanInput = (*C.uchar)(unsafe.Pointer(&input[0]))
+	} else {
+		sanInput = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_Poly1305_MAC(poly1305, sanAdditional, C.word32(addSz),
+		sanInput, C.word32(inSz),
+		(*C.uchar)(unsafe.Pointer(&tag[0])), C.word32(tagSz)))
 }
 
 func Wc_Poly1305_MacCheck(poly1305 *C.struct_Poly1305, additional []byte, addSz int,
-    input []byte, inSz int, tag []byte, tagSz int) int {
-    if tagSz < 0 || tagSz > len(tag) {
-        return BAD_FUNC_ARG
-    }
-    if tagSz < POLY1305_DIGEST_SIZE {
-        return BAD_FUNC_ARG
-    }
-    var computed [POLY1305_DIGEST_SIZE]byte
-    ret := Wc_Poly1305_MAC(poly1305, additional, addSz, input, inSz, computed[:], POLY1305_DIGEST_SIZE)
-    if ret != 0 {
-        return ret
-    }
-    if ConstantCompare(computed[:], tag[:tagSz], POLY1305_DIGEST_SIZE) != 1 {
-        return BAD_FUNC_ARG
-    }
-    return 0
+	input []byte, inSz int, tag []byte, tagSz int) int {
+	if tagSz < 0 || tagSz > len(tag) {
+		return BAD_FUNC_ARG
+	}
+	if tagSz < POLY1305_DIGEST_SIZE {
+		return BAD_FUNC_ARG
+	}
+	var computed [POLY1305_DIGEST_SIZE]byte
+	ret := Wc_Poly1305_MAC(poly1305, additional, addSz, input, inSz, computed[:], POLY1305_DIGEST_SIZE)
+	if ret != 0 {
+		return ret
+	}
+	if ConstantCompare(computed[:], tag[:tagSz], POLY1305_DIGEST_SIZE) != 1 {
+		return MAC_CMP_FAILED_E
+	}
+	return 0
 }

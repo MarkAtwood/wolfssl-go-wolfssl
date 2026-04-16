@@ -71,7 +71,7 @@ package wolfSSL
 // #endif
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 // WcHashType is the wolfcrypt hash algorithm selector.
@@ -84,79 +84,91 @@ const WC_MAX_DIGEST_SIZE = int(C.WC_MAX_DIGEST_SIZE)
 
 // WcHashType constants mirroring wc_HashType enum values.
 const (
-    WC_HASH_TYPE_NONE    = int(C.WC_HASH_TYPE_NONE)
-    WC_HASH_TYPE_MD5     = int(C.WC_HASH_TYPE_MD5)
-    WC_HASH_TYPE_SHA     = int(C.WC_HASH_TYPE_SHA)
-    WC_HASH_TYPE_SHA224  = int(C.WC_HASH_TYPE_SHA224)
-    WC_HASH_TYPE_SHA256  = int(C.WC_HASH_TYPE_SHA256)
-    WC_HASH_TYPE_SHA384  = int(C.WC_HASH_TYPE_SHA384)
-    WC_HASH_TYPE_SHA512  = int(C.WC_HASH_TYPE_SHA512)
-    WC_HASH_TYPE_SHA3_224 = int(C.WC_HASH_TYPE_SHA3_224)
-    WC_HASH_TYPE_SHA3_256 = int(C.WC_HASH_TYPE_SHA3_256)
-    WC_HASH_TYPE_SHA3_384 = int(C.WC_HASH_TYPE_SHA3_384)
-    WC_HASH_TYPE_SHA3_512 = int(C.WC_HASH_TYPE_SHA3_512)
+	WC_HASH_TYPE_NONE     = int(C.WC_HASH_TYPE_NONE)
+	WC_HASH_TYPE_MD5      = int(C.WC_HASH_TYPE_MD5)
+	WC_HASH_TYPE_SHA      = int(C.WC_HASH_TYPE_SHA)
+	WC_HASH_TYPE_SHA224   = int(C.WC_HASH_TYPE_SHA224)
+	WC_HASH_TYPE_SHA256   = int(C.WC_HASH_TYPE_SHA256)
+	WC_HASH_TYPE_SHA384   = int(C.WC_HASH_TYPE_SHA384)
+	WC_HASH_TYPE_SHA512   = int(C.WC_HASH_TYPE_SHA512)
+	WC_HASH_TYPE_SHA3_224 = int(C.WC_HASH_TYPE_SHA3_224)
+	WC_HASH_TYPE_SHA3_256 = int(C.WC_HASH_TYPE_SHA3_256)
+	WC_HASH_TYPE_SHA3_384 = int(C.WC_HASH_TYPE_SHA3_384)
+	WC_HASH_TYPE_SHA3_512 = int(C.WC_HASH_TYPE_SHA3_512)
 )
 
 // Wc_HashGetDigestSize returns the digest size in bytes for the given hash
 // type, or a negative wolfcrypt error code on failure.
 func Wc_HashGetDigestSize(hashType int) int {
-    return int(C.wc_HashGetDigestSize_shim(C.int(hashType)))
+	return int(C.wc_HashGetDigestSize_shim(C.int(hashType)))
 }
 
 // Wc_HashGetBlockSize returns the block size in bytes for the given hash
 // type, or a negative wolfcrypt error code on failure.
 func Wc_HashGetBlockSize(hashType int) int {
-    return int(C.wc_HashGetBlockSize_shim(C.int(hashType)))
+	return int(C.wc_HashGetBlockSize_shim(C.int(hashType)))
 }
 
 // Wc_Hash computes a one-shot hash of data using the given hash type and
 // writes the digest into output. output must be at least
 // Wc_HashGetDigestSize(hashType) bytes. Returns 0 on success.
 func Wc_Hash(hashType int, input []byte, inputSz int, output []byte) int {
-    if inputSz < 0 || inputSz > len(input) { return BAD_FUNC_ARG }
-    digestSz := Wc_HashGetDigestSize(hashType)
-    if digestSz <= 0 { return BAD_FUNC_ARG }
-    if len(output) < digestSz { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(input) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
-    }
-    return int(C.wc_Hash_shim(C.int(hashType),
-        sanIn, C.word32(inputSz),
-        (*C.uchar)(unsafe.Pointer(&output[0])), C.word32(digestSz)))
+	if inputSz < 0 || inputSz > len(input) {
+		return BAD_FUNC_ARG
+	}
+	digestSz := Wc_HashGetDigestSize(hashType)
+	if digestSz <= 0 {
+		return BAD_FUNC_ARG
+	}
+	if len(output) < digestSz {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(input) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
+	}
+	return int(C.wc_Hash_shim(C.int(hashType),
+		sanIn, C.word32(inputSz),
+		(*C.uchar)(unsafe.Pointer(&output[0])), C.word32(digestSz)))
 }
 
 // Wc_HashInit initializes a wc_HashAlg streaming context for the given hash
 // type. The caller must call Wc_HashFree when done. Returns 0 on success.
 func Wc_HashInit(hashAlg *WcHashAlg, hashType int) int {
-    return int(C.wc_HashInit_shim(hashAlg, C.int(hashType)))
+	return int(C.wc_HashInit_shim(hashAlg, C.int(hashType)))
 }
 
 // Wc_HashUpdate feeds data into an initialized wc_HashAlg context.
 // Returns 0 on success.
 func Wc_HashUpdate(hashAlg *WcHashAlg, hashType int, input []byte, inputSz int) int {
-    if inputSz < 0 || inputSz > len(input) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if inputSz > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
-    }
-    return int(C.wc_HashUpdate_shim(hashAlg, C.int(hashType),
-        sanIn, C.word32(inputSz)))
+	if inputSz < 0 || inputSz > len(input) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if inputSz > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
+	}
+	return int(C.wc_HashUpdate_shim(hashAlg, C.int(hashType),
+		sanIn, C.word32(inputSz)))
 }
 
 // Wc_HashFinal finalizes the hash and writes the digest to output.
 // output must be at least Wc_HashGetDigestSize(hashType) bytes.
 // Returns 0 on success.
 func Wc_HashFinal(hashAlg *WcHashAlg, hashType int, output []byte) int {
-    digestSz := Wc_HashGetDigestSize(hashType)
-    if digestSz <= 0 { return BAD_FUNC_ARG }
-    if len(output) < digestSz { return BAD_FUNC_ARG }
-    return int(C.wc_HashFinal_shim(hashAlg, C.int(hashType),
-        (*C.uchar)(unsafe.Pointer(&output[0]))))
+	digestSz := Wc_HashGetDigestSize(hashType)
+	if digestSz <= 0 {
+		return BAD_FUNC_ARG
+	}
+	if len(output) < digestSz {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_HashFinal_shim(hashAlg, C.int(hashType),
+		(*C.uchar)(unsafe.Pointer(&output[0]))))
 }
 
 // Wc_HashFree releases resources held by a wc_HashAlg context.
 // Returns 0 on success.
 func Wc_HashFree(hashAlg *WcHashAlg, hashType int) int {
-    return int(C.wc_HashFree_shim(hashAlg, C.int(hashType)))
+	return int(C.wc_HashFree_shim(hashAlg, C.int(hashType)))
 }

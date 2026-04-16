@@ -96,38 +96,38 @@ type Wc_Sha512_256 = C.struct_wc_Sha512
 // Wc_InitSha512_224 initializes a SHA-512/224 streaming context.
 // Returns 0 on success, negative on error.
 func Wc_InitSha512_224(sha *Wc_Sha512_224) int {
-    return int(C.wc_go_InitSha512_224(sha))
+	return int(C.wc_go_InitSha512_224(sha))
 }
 
 // Wc_Sha512_224Free releases resources held by a SHA-512/224 context.
 func Wc_Sha512_224Free(sha *Wc_Sha512_224) {
-    C.wc_go_Sha512_224Free(sha)
+	C.wc_go_Sha512_224Free(sha)
 }
 
 // Wc_Sha512_224Update feeds data into a SHA-512/224 context.
 // inSz must be <= len(in).
 // Returns 0 on success, negative on error.
 func Wc_Sha512_224Update(sha *Wc_Sha512_224, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.byte
-    if len(in) > 0 {
-        sanIn = (*C.byte)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.byte)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha512_224Update(sha, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.byte
+	if len(in) > 0 {
+		sanIn = (*C.byte)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.byte)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha512_224Update(sha, sanIn, C.word32(inSz)))
 }
 
 // Wc_Sha512_224Final finalizes the SHA-512/224 digest into out.
 // out must have capacity >= WC_SHA512_224_DIGEST_SIZE (28 bytes).
 // Returns 0 on success, negative on error.
 func Wc_Sha512_224Final(sha *Wc_Sha512_224, out []byte) int {
-    if len(out) < WC_SHA512_224_DIGEST_SIZE {
-        return -173
-    }
-    return int(C.wc_go_Sha512_224Final(sha, (*C.byte)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA512_224_DIGEST_SIZE {
+		return -173
+	}
+	return int(C.wc_go_Sha512_224Final(sha, (*C.byte)(unsafe.Pointer(&out[0]))))
 }
 
 // SHA-512/256
@@ -135,36 +135,36 @@ func Wc_Sha512_224Final(sha *Wc_Sha512_224, out []byte) int {
 // Wc_InitSha512_256 initializes a SHA-512/256 streaming context.
 // Returns 0 on success, negative on error.
 func Wc_InitSha512_256(sha *Wc_Sha512_256) int {
-    return int(C.wc_go_InitSha512_256(sha))
+	return int(C.wc_go_InitSha512_256(sha))
 }
 
 // Wc_Sha512_256Free releases resources held by a SHA-512/256 context.
 func Wc_Sha512_256Free(sha *Wc_Sha512_256) {
-    C.wc_go_Sha512_256Free(sha)
+	C.wc_go_Sha512_256Free(sha)
 }
 
 // Wc_Sha512_256Update feeds data into a SHA-512/256 context.
 // inSz must be <= len(in).
 // Returns 0 on success, negative on error.
 func Wc_Sha512_256Update(sha *Wc_Sha512_256, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.byte
-    if len(in) > 0 {
-        sanIn = (*C.byte)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.byte)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha512_256Update(sha, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.byte
+	if len(in) > 0 {
+		sanIn = (*C.byte)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.byte)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha512_256Update(sha, sanIn, C.word32(inSz)))
 }
 
 // Wc_Sha512_256Final finalizes the SHA-512/256 digest into out.
 // out must have capacity >= WC_SHA512_256_DIGEST_SIZE (32 bytes).
 // Returns 0 on success, negative on error.
 func Wc_Sha512_256Final(sha *Wc_Sha512_256, out []byte) int {
-    if len(out) < WC_SHA512_256_DIGEST_SIZE {
-        return -173
-    }
-    return int(C.wc_go_Sha512_256Final(sha, (*C.byte)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA512_256_DIGEST_SIZE {
+		return -173
+	}
+	return int(C.wc_go_Sha512_256Final(sha, (*C.byte)(unsafe.Pointer(&out[0]))))
 }

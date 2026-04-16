@@ -69,21 +69,21 @@ package wolfSSL
 import "C"
 
 func Wc_SetDefaultFips_Cb() {
-    C.wc_SetDefaultFips_Cb()
+	C.wc_SetDefaultFips_Cb()
 }
 
 func Wc_SetDefaultSeed_Cb() int {
-    return int(C.wc_SetSeed_Cb((C.wc_RngSeed_Cb)(C.wc_GenerateSeed)))
+	return int(C.wc_SetSeed_Cb((C.wc_RngSeed_Cb)(C.wc_GenerateSeed)))
 }
 
 func PRIVATE_KEY_LOCK() int {
-    return int(C.WC_PRIVATE_KEY_LOCK())
+	return int(C.WC_PRIVATE_KEY_LOCK())
 }
 
 func PRIVATE_KEY_UNLOCK() int {
-    return int(C.WC_PRIVATE_KEY_UNLOCK())
+	return int(C.WC_PRIVATE_KEY_UNLOCK())
 }
 
 func Wc_RunAllCast_fips() int {
-    return int(C.wc_RunAllCast_fips())
+	return int(C.wc_RunAllCast_fips())
 }

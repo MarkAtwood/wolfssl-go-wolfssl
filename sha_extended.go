@@ -76,12 +76,14 @@ package wolfSSL
 // #endif
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 type Wc_Sha = C.struct_wc_Sha
+
 // wc_Sha224 is a typedef for struct wc_Sha256 in the wolfSSL headers.
 type Wc_Sha224 = C.struct_wc_Sha256
+
 // wc_Sha384 is a typedef for struct wc_Sha512 in the wolfSSL headers.
 type Wc_Sha384 = C.struct_wc_Sha512
 type Wc_Sha512 = C.struct_wc_Sha512
@@ -89,121 +91,121 @@ type Wc_Sha512 = C.struct_wc_Sha512
 // SHA-1
 
 func Wc_InitSha(sha *C.struct_wc_Sha) int {
-    return int(C.wc_go_InitSha(sha))
+	return int(C.wc_go_InitSha(sha))
 }
 
 func Wc_ShaFree(sha *C.struct_wc_Sha) {
-    C.wc_go_ShaFree(sha)
+	C.wc_go_ShaFree(sha)
 }
 
 func Wc_ShaUpdate(sha *C.struct_wc_Sha, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_ShaUpdate(sha, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_ShaUpdate(sha, sanIn, C.word32(inSz)))
 }
 
 func Wc_ShaFinal(sha *C.struct_wc_Sha, out []byte) int {
-    if len(out) < WC_SHA_DIGEST_SIZE {
-        return -173
-    }
-    return int(C.wc_go_ShaFinal(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA_DIGEST_SIZE {
+		return -173
+	}
+	return int(C.wc_go_ShaFinal(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 // SHA-224
 // wc_Sha224 is a typedef for struct wc_Sha256; use Wc_Sha224 (= C.struct_wc_Sha256) as the parameter type.
 
 func Wc_InitSha224(sha *Wc_Sha224) int {
-    return int(C.wc_go_InitSha224(sha))
+	return int(C.wc_go_InitSha224(sha))
 }
 
 func Wc_Sha224Free(sha *Wc_Sha224) {
-    C.wc_go_Sha224Free(sha)
+	C.wc_go_Sha224Free(sha)
 }
 
 func Wc_Sha224Update(sha *Wc_Sha224, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha224Update(sha, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha224Update(sha, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha224Final(sha *Wc_Sha224, out []byte) int {
-    if len(out) < WC_SHA224_DIGEST_SIZE {
-        return -173
-    }
-    return int(C.wc_go_Sha224Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA224_DIGEST_SIZE {
+		return -173
+	}
+	return int(C.wc_go_Sha224Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 // SHA-384
 // wc_Sha384 is a typedef for struct wc_Sha512; use Wc_Sha384 (= C.struct_wc_Sha512) as the parameter type.
 
 func Wc_InitSha384(sha *Wc_Sha384) int {
-    return int(C.wc_go_InitSha384(sha))
+	return int(C.wc_go_InitSha384(sha))
 }
 
 func Wc_Sha384Free(sha *Wc_Sha384) {
-    C.wc_go_Sha384Free(sha)
+	C.wc_go_Sha384Free(sha)
 }
 
 func Wc_Sha384Update(sha *Wc_Sha384, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha384Update(sha, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha384Update(sha, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha384Final(sha *Wc_Sha384, out []byte) int {
-    if len(out) < WC_SHA384_DIGEST_SIZE {
-        return -173
-    }
-    return int(C.wc_go_Sha384Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA384_DIGEST_SIZE {
+		return -173
+	}
+	return int(C.wc_go_Sha384Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 // SHA-512
 
 func Wc_InitSha512(sha *C.struct_wc_Sha512) int {
-    return int(C.wc_go_InitSha512(sha))
+	return int(C.wc_go_InitSha512(sha))
 }
 
 func Wc_Sha512Free(sha *C.struct_wc_Sha512) {
-    C.wc_go_Sha512Free(sha)
+	C.wc_go_Sha512Free(sha)
 }
 
 func Wc_Sha512Update(sha *C.struct_wc_Sha512, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_go_Sha512Update(sha, sanIn, C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_go_Sha512Update(sha, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha512Final(sha *C.struct_wc_Sha512, out []byte) int {
-    if len(out) < WC_SHA512_DIGEST_SIZE {
-        return -173
-    }
-    return int(C.wc_go_Sha512Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA512_DIGEST_SIZE {
+		return -173
+	}
+	return int(C.wc_go_Sha512Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }

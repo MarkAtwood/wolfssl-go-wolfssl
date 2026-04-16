@@ -58,56 +58,80 @@ const WC_CAMELLIA_BLOCK_SIZE = int(C.WC_CAMELLIA_BLOCK_SIZE)
 type Wc_Camellia = C.struct_wc_Camellia
 
 func Wc_CamelliaSetKey(cam *C.struct_wc_Camellia, key []byte, length int, iv []byte) int {
-    if length < 0 || length > len(key) { return BAD_FUNC_ARG }
-    if len(key) == 0 { return BAD_FUNC_ARG }
-    var ivPtr *C.uchar
-    if len(iv) > 0 {
-        ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
-    }
-    return int(C.wc_CamelliaSetKey(cam, (*C.uchar)(unsafe.Pointer(&key[0])),
-               C.word32(length), ivPtr))
+	if length < 0 || length > len(key) {
+		return BAD_FUNC_ARG
+	}
+	if len(key) == 0 {
+		return BAD_FUNC_ARG
+	}
+	var ivPtr *C.uchar
+	if len(iv) > 0 {
+		ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
+	}
+	return int(C.wc_CamelliaSetKey(cam, (*C.uchar)(unsafe.Pointer(&key[0])),
+		C.word32(length), ivPtr))
 }
 
 func Wc_CamelliaSetIV(cam *C.struct_wc_Camellia, iv []byte) int {
-    var ivPtr *C.uchar
-    if len(iv) > 0 {
-        ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
-    }
-    return int(C.wc_CamelliaSetIV(cam, ivPtr))
+	var ivPtr *C.uchar
+	if len(iv) > 0 {
+		ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
+	}
+	return int(C.wc_CamelliaSetIV(cam, ivPtr))
 }
 
 func Wc_CamelliaEncryptDirect(cam *C.struct_wc_Camellia, out []byte, in []byte) int {
-    if len(out) < WC_CAMELLIA_BLOCK_SIZE { return BAD_FUNC_ARG }
-    if len(in) < WC_CAMELLIA_BLOCK_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_CamelliaEncryptDirect(cam,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0]))))
+	if len(out) < WC_CAMELLIA_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	if len(in) < WC_CAMELLIA_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_CamelliaEncryptDirect(cam,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0]))))
 }
 
 func Wc_CamelliaDecryptDirect(cam *C.struct_wc_Camellia, out []byte, in []byte) int {
-    if len(out) < WC_CAMELLIA_BLOCK_SIZE { return BAD_FUNC_ARG }
-    if len(in) < WC_CAMELLIA_BLOCK_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_CamelliaDecryptDirect(cam,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0]))))
+	if len(out) < WC_CAMELLIA_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	if len(in) < WC_CAMELLIA_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_CamelliaDecryptDirect(cam,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0]))))
 }
 
 func Wc_CamelliaCbcEncrypt(cam *C.struct_wc_Camellia, out []byte, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if sz == 0 { return 0 }
-    return int(C.wc_CamelliaCbcEncrypt(cam,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if sz == 0 {
+		return 0
+	}
+	return int(C.wc_CamelliaCbcEncrypt(cam,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.word32(sz)))
 }
 
 func Wc_CamelliaCbcDecrypt(cam *C.struct_wc_Camellia, out []byte, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if sz == 0 { return 0 }
-    return int(C.wc_CamelliaCbcDecrypt(cam,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if sz == 0 {
+		return 0
+	}
+	return int(C.wc_CamelliaCbcDecrypt(cam,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.word32(sz)))
 }

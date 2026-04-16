@@ -72,6 +72,17 @@ package wolfSSL
 // }
 // #endif
 //
+// /* --- SHA3-224 copy --- */
+// #ifdef WOLFSSL_SHA3
+// static int wc_Sha3_224_Copy_shim(wc_Sha3* src, wc_Sha3* dst) {
+//     return wc_Sha3_224_Copy(src, dst);
+// }
+// #else
+// static int wc_Sha3_224_Copy_shim(void* src, void* dst) {
+//     (void)src; (void)dst; return -174;
+// }
+// #endif
+//
 // /* --- SHA3-256 copy --- */
 // #ifdef WOLFSSL_SHA3
 // static int wc_Sha3_256_Copy_shim(wc_Sha3* src, wc_Sha3* dst) {
@@ -82,38 +93,81 @@ package wolfSSL
 //     (void)src; (void)dst; return -174;
 // }
 // #endif
+//
+// /* --- SHA3-384 copy --- */
+// #ifdef WOLFSSL_SHA3
+// static int wc_Sha3_384_Copy_shim(wc_Sha3* src, wc_Sha3* dst) {
+//     return wc_Sha3_384_Copy(src, dst);
+// }
+// #else
+// static int wc_Sha3_384_Copy_shim(void* src, void* dst) {
+//     (void)src; (void)dst; return -174;
+// }
+// #endif
+//
+// /* --- SHA3-512 copy --- */
+// #ifdef WOLFSSL_SHA3
+// static int wc_Sha3_512_Copy_shim(wc_Sha3* src, wc_Sha3* dst) {
+//     return wc_Sha3_512_Copy(src, dst);
+// }
+// #else
+// static int wc_Sha3_512_Copy_shim(void* src, void* dst) {
+//     (void)src; (void)dst; return -174;
+// }
+// #endif
 import "C"
 
 // Wc_Sha256Copy duplicates a mid-stream SHA-256 state from src into dst.
 // Both src and dst must have been initialised with Wc_InitSha256_ex.
 func Wc_Sha256Copy(src *C.struct_wc_Sha256, dst *C.struct_wc_Sha256) int {
-    return int(C.wc_Sha256Copy_shim(src, dst))
+	return int(C.wc_Sha256Copy_shim(src, dst))
 }
 
 // Wc_Sha224Copy duplicates a mid-stream SHA-224 state from src into dst.
 // Both src and dst must have been initialised with wc_InitSha224_ex.
 // Returns -174 if wolfSSL was built without WOLFSSL_SHA224.
 func Wc_Sha224Copy(src *C.struct_wc_Sha256, dst *C.struct_wc_Sha256) int {
-    return int(C.wc_Sha224Copy_shim(src, dst))
+	return int(C.wc_Sha224Copy_shim(src, dst))
 }
 
 // Wc_Sha384Copy duplicates a mid-stream SHA-384 state from src into dst.
 // Both src and dst must have been initialised with wc_InitSha384_ex.
 // Returns -174 if wolfSSL was built without WOLFSSL_SHA384.
 func Wc_Sha384Copy(src *C.struct_wc_Sha512, dst *C.struct_wc_Sha512) int {
-    return int(C.wc_Sha384Copy_shim(src, dst))
+	return int(C.wc_Sha384Copy_shim(src, dst))
 }
 
 // Wc_Sha512Copy duplicates a mid-stream SHA-512 state from src into dst.
 // Both src and dst must have been initialised with wc_InitSha512_ex.
 // Returns -174 if wolfSSL was built without WOLFSSL_SHA512.
 func Wc_Sha512Copy(src *C.struct_wc_Sha512, dst *C.struct_wc_Sha512) int {
-    return int(C.wc_Sha512Copy_shim(src, dst))
+	return int(C.wc_Sha512Copy_shim(src, dst))
+}
+
+// Wc_Sha3_224_Copy duplicates a mid-stream SHA3-224 state from src into dst.
+// Both src and dst must have been initialised with wc_InitSha3_224.
+// Returns -174 if wolfSSL was built without WOLFSSL_SHA3.
+func Wc_Sha3_224_Copy(src *C.struct_wc_Sha3, dst *C.struct_wc_Sha3) int {
+	return int(C.wc_Sha3_224_Copy_shim(src, dst))
 }
 
 // Wc_Sha3_256_Copy duplicates a mid-stream SHA3-256 state from src into dst.
 // Both src and dst must have been initialised with wc_InitSha3_256.
 // Returns -174 if wolfSSL was built without WOLFSSL_SHA3.
 func Wc_Sha3_256_Copy(src *C.struct_wc_Sha3, dst *C.struct_wc_Sha3) int {
-    return int(C.wc_Sha3_256_Copy_shim(src, dst))
+	return int(C.wc_Sha3_256_Copy_shim(src, dst))
+}
+
+// Wc_Sha3_384_Copy duplicates a mid-stream SHA3-384 state from src into dst.
+// Both src and dst must have been initialised with wc_InitSha3_384.
+// Returns -174 if wolfSSL was built without WOLFSSL_SHA3.
+func Wc_Sha3_384_Copy(src *C.struct_wc_Sha3, dst *C.struct_wc_Sha3) int {
+	return int(C.wc_Sha3_384_Copy_shim(src, dst))
+}
+
+// Wc_Sha3_512_Copy duplicates a mid-stream SHA3-512 state from src into dst.
+// Both src and dst must have been initialised with wc_InitSha3_512.
+// Returns -174 if wolfSSL was built without WOLFSSL_SHA3.
+func Wc_Sha3_512_Copy(src *C.struct_wc_Sha3, dst *C.struct_wc_Sha3) int {
+	return int(C.wc_Sha3_512_Copy_shim(src, dst))
 }

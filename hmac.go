@@ -48,74 +48,90 @@ package wolfSSL
 // #endif
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 type Hmac = C.struct_Hmac
 
 /* Returns a 16-byte aligned Hmac struct allocated on the C heap (needed by SSE instructions) */
 func Wc_HmacAllocAligned() *C.struct_Hmac {
-    return C.wc_HmacAllocAligned()
+	return C.wc_HmacAllocAligned()
 }
 
 func Wc_HmacFreeAllocAligned(hmac *C.struct_Hmac) {
-    C.wc_HmacFreeAllocAligned(hmac)
+	C.wc_HmacFreeAllocAligned(hmac)
 }
 
 func Wc_HmacInit(hmac *C.struct_Hmac, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_HmacInit(hmac, heap, C.int(devId)))
+	return int(C.wc_HmacInit(hmac, heap, C.int(devId)))
 }
 
 func Wc_HmacFree(hmac *C.struct_Hmac) {
-    C.wc_HmacFree(hmac)
+	C.wc_HmacFree(hmac)
 }
 
 func Wc_HmacSetKey(hmac *C.struct_Hmac, hash int, key []byte, keySz int) int {
-    if keySz < 0 || keySz > len(key) { return BAD_FUNC_ARG }
-    var sanKey *C.uchar
-    if len(key) > 0 {
-        sanKey = (*C.uchar)(unsafe.Pointer(&key[0]))
-    } else {
-        sanKey = (*C.uchar)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_HmacSetKey(hmac, C.int(hash), sanKey, C.word32(keySz)))
+	if keySz < 0 || keySz > len(key) {
+		return BAD_FUNC_ARG
+	}
+	var sanKey *C.uchar
+	if len(key) > 0 {
+		sanKey = (*C.uchar)(unsafe.Pointer(&key[0]))
+	} else {
+		sanKey = (*C.uchar)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_HmacSetKey(hmac, C.int(hash), sanKey, C.word32(keySz)))
 }
 
 func Wc_HmacUpdate(hmac *C.struct_Hmac, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
 
-    return int(C.wc_HmacUpdate(hmac, sanIn, C.word32(inSz)))
+	return int(C.wc_HmacUpdate(hmac, sanIn, C.word32(inSz)))
 }
 
 func Wc_HmacFinal(hmac *C.struct_Hmac, out []byte) int {
-    if len(out) == 0 { return BAD_FUNC_ARG } 
-    return int(C.wc_HmacFinal(hmac, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) == 0 {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_HmacFinal(hmac, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }
 
 func Wc_HKDF(hashType int, inputKey []byte, inputKeySz int, salt []byte,
-             saltSz int, info []byte, infoSz int, out []byte, outSz int) int {
-    if inputKeySz < 0 || inputKeySz > len(inputKey) { return BAD_FUNC_ARG }
-    if saltSz < 0 || saltSz > len(salt) { return BAD_FUNC_ARG }
-    if infoSz < 0 || infoSz > len(info) { return BAD_FUNC_ARG }
-    if outSz < 0 || outSz > len(out) { return BAD_FUNC_ARG }
-    if len(inputKey) == 0 || len(out) == 0 { return BAD_FUNC_ARG }
-    var saltPtr *C.uchar
-    if len(salt) > 0 {
-        saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
-    }
-    var infoPtr *C.uchar
-    if len(info) > 0 {
-        infoPtr = (*C.uchar)(unsafe.Pointer(&info[0]))
-    }
-    return int(C.wc_HKDF(C.int(hashType), (*C.uchar)(unsafe.Pointer(&inputKey[0])),
-               C.word32(inputKeySz), saltPtr,
-               C.word32(saltSz), infoPtr,
-               C.word32(infoSz), (*C.uchar)(unsafe.Pointer(&out[0])),
-               C.word32(outSz)))
+	saltSz int, info []byte, infoSz int, out []byte, outSz int) int {
+	if inputKeySz < 0 || inputKeySz > len(inputKey) {
+		return BAD_FUNC_ARG
+	}
+	if saltSz < 0 || saltSz > len(salt) {
+		return BAD_FUNC_ARG
+	}
+	if infoSz < 0 || infoSz > len(info) {
+		return BAD_FUNC_ARG
+	}
+	if outSz < 0 || outSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	if len(inputKey) == 0 || len(out) == 0 {
+		return BAD_FUNC_ARG
+	}
+	var saltPtr *C.uchar
+	if len(salt) > 0 {
+		saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
+	}
+	var infoPtr *C.uchar
+	if len(info) > 0 {
+		infoPtr = (*C.uchar)(unsafe.Pointer(&info[0]))
+	}
+	return int(C.wc_HKDF(C.int(hashType), (*C.uchar)(unsafe.Pointer(&inputKey[0])),
+		C.word32(inputKeySz), saltPtr,
+		C.word32(saltSz), infoPtr,
+		C.word32(infoSz), (*C.uchar)(unsafe.Pointer(&out[0])),
+		C.word32(outSz)))
 }

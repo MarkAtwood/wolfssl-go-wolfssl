@@ -63,7 +63,7 @@ type WOLFSSL_SESSION = C.struct_WOLFSSL_SESSION
 // WolfSSL_CTX_UseSessionTicket enables TLS session ticket support on the
 // context. Returns WOLFSSL_SUCCESS on success, negative on error.
 func WolfSSL_CTX_UseSessionTicket(ctx *C.struct_WOLFSSL_CTX) int {
-    return int(C.wolfSSL_CTX_UseSessionTicket(ctx))
+	return int(C.wolfSSL_CTX_UseSessionTicket(ctx))
 }
 
 // WolfSSL_CTX_set_tlsext_ticket_key_cb installs an OpenSSL-compatible session
@@ -72,7 +72,7 @@ func WolfSSL_CTX_UseSessionTicket(ctx *C.struct_WOLFSSL_CTX) int {
 // cb must be a C function pointer of the correct type; pass nil to clear.
 // Returns WOLFSSL_SUCCESS on success, negative on error.
 func WolfSSL_CTX_set_tlsext_ticket_key_cb(ctx *C.struct_WOLFSSL_CTX, cb unsafe.Pointer) int {
-    return int(C.wolfSSL_CTX_set_tlsext_ticket_key_cb(ctx, (C.ticketCompatCb)(cb)))
+	return int(C.wolfSSL_CTX_set_tlsext_ticket_key_cb(ctx, (C.ticketCompatCb)(cb)))
 }
 
 // WolfSSL_CTX_set_TicketEncCb installs a wolfSSL-native session ticket
@@ -80,49 +80,56 @@ func WolfSSL_CTX_set_tlsext_ticket_key_cb(ctx *C.struct_WOLFSSL_CTX, cb unsafe.P
 // cb must be a C function pointer of the correct type; pass nil to clear.
 // Returns WOLFSSL_SUCCESS on success, negative on error.
 func WolfSSL_CTX_set_TicketEncCb(ctx *C.struct_WOLFSSL_CTX, cb unsafe.Pointer) int {
-    return int(C.wolfSSL_CTX_set_TicketEncCb(ctx, (C.SessionTicketEncCb)(cb)))
+	return int(C.wolfSSL_CTX_set_TicketEncCb(ctx, (C.SessionTicketEncCb)(cb)))
 }
 
 // WolfSSL_CTX_set_session_cache_mode sets the session cache mode flags on the
 // context. mode is a bitmask of SSL_SESS_CACHE_* constants.
 // Returns the previously set mode.
 func WolfSSL_CTX_set_session_cache_mode(ctx *C.struct_WOLFSSL_CTX, mode int) int {
-    return int(C.wolfSSL_CTX_set_session_cache_mode(ctx, C.long(mode)))
+	return int(C.wolfSSL_CTX_set_session_cache_mode(ctx, C.long(mode)))
 }
 
 // WolfSSL_get_session retrieves the current session object from ssl.
 // The returned pointer is owned by the ssl object and must not be freed.
 // Returns nil if no session is available.
 func WolfSSL_get_session(ssl *C.struct_WOLFSSL) *C.struct_WOLFSSL_SESSION {
-    return C.wolfSSL_get_session(ssl)
+	return C.wolfSSL_get_session(ssl)
 }
 
 // WolfSSL_set_session resumes a previously obtained session on ssl.
 // session must have been obtained from WolfSSL_get_session on a completed
 // handshake. Returns WOLFSSL_SUCCESS on success, negative on error.
 func WolfSSL_set_session(ssl *C.struct_WOLFSSL, session *C.struct_WOLFSSL_SESSION) int {
-    return int(C.wolfSSL_set_session(ssl, session))
+	return int(C.wolfSSL_set_session(ssl, session))
 }
 
-// WolfSSL_SESSION_free releases a WOLFSSL_SESSION obtained from
-// WolfSSL_d2i_SSL_SESSION or wolfSSL_get1_session.
-// Do not call this on sessions returned by WolfSSL_get_session (not ref-counted).
+// WolfSSL_SESSION_free releases a WOLFSSL_SESSION.
+// Call this only on sessions obtained from WolfSSL_d2i_SSL_SESSION or
+// wolfSSL_get1_session (which increment the reference count).
+// Sessions obtained from WolfSSL_get_session are owned by the ssl object —
+// do not free them.
 func WolfSSL_SESSION_free(session *C.struct_WOLFSSL_SESSION) {
-    C.wolfSSL_SESSION_free(session)
+	C.wolfSSL_SESSION_free(session)
 }
 
 // WolfSSL_i2d_SSL_SESSION serializes session to DER. If p is non-nil, the
 // encoded bytes are written there and *p is advanced past the written data.
 // Returns the number of bytes written, or negative on error.
 func WolfSSL_i2d_SSL_SESSION(sess *C.struct_WOLFSSL_SESSION, p *[]byte) int {
-    if p == nil {
-        return int(C.wolfSSL_i2d_SSL_SESSION(sess, (**C.uchar)(nil)))
-    }
-    var cp *C.uchar
-    if len(*p) > 0 {
-        cp = (*C.uchar)(unsafe.Pointer(&(*p)[0]))
-    }
-    return int(C.wolfSSL_i2d_SSL_SESSION(sess, &cp))
+	if p == nil {
+		return int(C.wolfSSL_i2d_SSL_SESSION(sess, (**C.uchar)(nil)))
+	}
+	var cp *C.uchar
+	if len(*p) > 0 {
+		cp = (*C.uchar)(unsafe.Pointer(&(*p)[0]))
+	}
+	ret := int(C.wolfSSL_i2d_SSL_SESSION(sess, &cp))
+	// Advance *p past the bytes written, matching the OpenSSL i2d convention.
+	if ret > 0 && len(*p) >= ret {
+		*p = (*p)[ret:]
+	}
+	return ret
 }
 
 // WolfSSL_d2i_SSL_SESSION deserializes a DER-encoded session. If sess is
@@ -131,10 +138,19 @@ func WolfSSL_i2d_SSL_SESSION(sess *C.struct_WOLFSSL_SESSION, p *[]byte) int {
 // Returns the deserialized session on success, nil on error.
 // The caller is responsible for calling WolfSSL_SESSION_free on the result.
 func WolfSSL_d2i_SSL_SESSION(sess **C.struct_WOLFSSL_SESSION,
-    p *[]byte, i int) *C.struct_WOLFSSL_SESSION {
-    if p == nil || len(*p) == 0 {
-        return nil
-    }
-    cp := (*C.uchar)(unsafe.Pointer(&(*p)[0]))
-    return C.wolfSSL_d2i_SSL_SESSION(sess, &cp, C.long(i))
+	p *[]byte, i int) *C.struct_WOLFSSL_SESSION {
+	if p == nil || len(*p) == 0 {
+		return nil
+	}
+	start := unsafe.Pointer(&(*p)[0])
+	cp := (*C.uchar)(start)
+	result := C.wolfSSL_d2i_SSL_SESSION(sess, &cp, C.long(i))
+	// Advance *p past the bytes consumed, matching the OpenSSL d2i convention.
+	if result != nil && cp != nil {
+		consumed := int(uintptr(unsafe.Pointer(cp)) - uintptr(start))
+		if consumed > 0 && consumed <= len(*p) {
+			*p = (*p)[consumed:]
+		}
+	}
+	return result
 }

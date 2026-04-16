@@ -100,11 +100,9 @@ func WolfSSL_X509_get_ext_d2i(x509 *WOLFSSL_X509, nid int, c *int, idx *int) uns
 	var cCPtr *C.int
 	var cIdxPtr *C.int
 	if c != nil {
-		cC = C.int(*c)
 		cCPtr = &cC
 	}
 	if idx != nil {
-		cIdx = C.int(*idx)
 		cIdxPtr = &cIdx
 	}
 	result := C.wolfSSL_X509_get_ext_d2i(x509, C.int(nid), cCPtr, cIdxPtr)

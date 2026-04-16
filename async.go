@@ -64,7 +64,7 @@ import "unsafe"
 // Returns 0 on success, negative on error.
 // Always returns -174 (NOT_COMPILED_IN) when WOLFSSL_ASYNC_CRYPT is not enabled.
 func WolfAsync_DevOpen(devId *int) int {
-	cDevId := C.int(*devId)
+	var cDevId C.int
 	ret := int(C.wolfAsync_DevOpen(&cDevId))
 	*devId = int(cDevId)
 	return ret
@@ -79,9 +79,12 @@ func WolfAsync_DevClose(devId *int) {
 
 // WolfAsync_DevCtxInit initializes a WC_ASYNC_DEV context with the given
 // marker, heap pointer, and device ID.
+// heap must be a *WOLFSSL_HEAP_HINT obtained from Wc_LoadStaticMemory, or nil
+// to use the default system allocator. wolfSSL stores this pointer for the
+// lifetime of the context; passing a Go heap pointer here is not supported.
 // Returns 0 on success, negative on error.
-func WolfAsync_DevCtxInit(asyncDev *C.struct_WC_ASYNC_DEV, marker uint, heap unsafe.Pointer, devId int) int {
-	return int(C.wolfAsync_DevCtxInit(asyncDev, C.word32(marker), heap, C.int(devId)))
+func WolfAsync_DevCtxInit(asyncDev *C.struct_WC_ASYNC_DEV, marker uint, heap *C.struct_WOLFSSL_HEAP_HINT, devId int) int {
+	return int(C.wolfAsync_DevCtxInit(asyncDev, C.word32(marker), unsafe.Pointer(heap), C.int(devId)))
 }
 
 // WolfAsync_DevCtxFree frees a WC_ASYNC_DEV context.

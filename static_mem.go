@@ -61,18 +61,22 @@ const (
 )
 
 // WolfSSL_CTX_load_static_memory initializes or attaches a WOLFSSL_CTX to a
-// caller-supplied static memory buffer.  Pass method=nil to use an existing
-// ctx, or a non-nil method to allocate a new ctx from the buffer.
+// caller-supplied static memory buffer.
+// method must be a C function pointer of type wolfSSL_method_func (e.g.
+// wolfTLSv1_3_client_method, wolfDTLSv1_2_server_method), cast to
+// unsafe.Pointer, or nil to attach the buffer to an existing ctx without
+// creating a new one.  Callers obtain a valid method pointer from their own C
+// code — Go function values cannot be used here.
 // buf must remain valid for the lifetime of the context.
 // Returns WOLFSSL_SUCCESS on success, negative on error.
 // Always returns -174 (NOT_COMPILED_IN) when WOLFSSL_STATIC_MEMORY is not enabled.
-func WolfSSL_CTX_load_static_memory(ctx **C.struct_WOLFSSL_CTX, buf []byte, flag int, max int) int {
+func WolfSSL_CTX_load_static_memory(ctx **C.struct_WOLFSSL_CTX, method unsafe.Pointer, buf []byte, flag int, max int) int {
 	if len(buf) == 0 {
 		return -174
 	}
 	return int(C.wolfSSL_CTX_load_static_memory(
 		ctx,
-		nil,
+		(C.wolfSSL_method_func)(method),
 		(*C.uchar)(unsafe.Pointer(&buf[0])),
 		C.uint(len(buf)),
 		C.int(flag),

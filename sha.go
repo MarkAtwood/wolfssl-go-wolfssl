@@ -25,32 +25,36 @@ package wolfSSL
 // #include <wolfssl/wolfcrypt/sha256.h>
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 type Wc_Sha256 = C.struct_wc_Sha256
 
 func Wc_InitSha256_ex(sha *C.struct_wc_Sha256, heap unsafe.Pointer, devId int) int {
-    return int(C.wc_InitSha256_ex(sha, heap, C.int(devId)))
+	return int(C.wc_InitSha256_ex(sha, heap, C.int(devId)))
 }
 
 func Wc_Sha256Free(sha *C.struct_wc_Sha256) {
-    C.wc_Sha256Free(sha)
+	C.wc_Sha256Free(sha)
 }
 
 func Wc_Sha256Update(sha *C.struct_wc_Sha256, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    var sanIn *C.uchar
-    if len(in) > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.uchar)(unsafe.Pointer(nil))
-    }
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.uchar
+	if len(in) > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.uchar)(unsafe.Pointer(nil))
+	}
 
-    return int(C.wc_Sha256Update(sha, sanIn, C.word32(inSz)))
+	return int(C.wc_Sha256Update(sha, sanIn, C.word32(inSz)))
 }
 
 func Wc_Sha256Final(sha *C.struct_wc_Sha256, out []byte) int {
-    if len(out) < WC_SHA256_DIGEST_SIZE { return -173 }
-    return int(C.wc_Sha256Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
+	if len(out) < WC_SHA256_DIGEST_SIZE {
+		return -173
+	}
+	return int(C.wc_Sha256Final(sha, (*C.uchar)(unsafe.Pointer(&out[0]))))
 }

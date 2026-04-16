@@ -75,6 +75,9 @@ import (
 // protocol_name_list is a comma-separated list of protocol names.
 // Returns WOLFSSL_SUCCESS on success or a negative error code.
 func WolfSSL_UseALPN(ssl *C.struct_WOLFSSL, protocolNameList string, options int) int {
+	if options < 0 || options > 0xFF {
+		return BAD_FUNC_ARG
+	}
 	cList := C.CString(protocolNameList)
 	defer C.free(unsafe.Pointer(cList))
 	return int(C.wolfSSL_UseALPN(ssl, cList,

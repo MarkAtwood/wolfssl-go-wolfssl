@@ -52,46 +52,46 @@ type Blake2b = C.struct_Blake2b
 // bytes (up to WC_BLAKE2B_512_DIGEST_SIZE).
 // Returns 0 on success, negative on error.
 func Wc_InitBlake2b(b *C.struct_Blake2b, digestSz int) int {
-    return int(C.wc_InitBlake2b(b, C.word32(digestSz)))
+	return int(C.wc_InitBlake2b(b, C.word32(digestSz)))
 }
 
 // Wc_InitBlake2b_WithKey initializes a BLAKE2b context with a MAC key.
 // Returns 0 on success, negative on error.
 func Wc_InitBlake2b_WithKey(b *C.struct_Blake2b, digestSz int, key []byte) int {
-    var sanKey *C.byte
-    if len(key) > 0 {
-        sanKey = (*C.byte)(unsafe.Pointer(&key[0]))
-    }
-    return int(C.wc_InitBlake2b_WithKey(b, C.word32(digestSz),
-        sanKey, C.word32(len(key))))
+	var sanKey *C.byte
+	if len(key) > 0 {
+		sanKey = (*C.byte)(unsafe.Pointer(&key[0]))
+	}
+	return int(C.wc_InitBlake2b_WithKey(b, C.word32(digestSz),
+		sanKey, C.word32(len(key))))
 }
 
 // Wc_Blake2bUpdate feeds data into a BLAKE2b context.
 // sz must be <= len(in).
 // Returns 0 on success, negative on error.
 func Wc_Blake2bUpdate(b *C.struct_Blake2b, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    var sanIn *C.byte
-    if len(in) > 0 {
-        sanIn = (*C.byte)(unsafe.Pointer(&in[0]))
-    } else {
-        sanIn = (*C.byte)(unsafe.Pointer(nil))
-    }
-    return int(C.wc_Blake2bUpdate(b, sanIn, C.word32(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	var sanIn *C.byte
+	if len(in) > 0 {
+		sanIn = (*C.byte)(unsafe.Pointer(&in[0]))
+	} else {
+		sanIn = (*C.byte)(unsafe.Pointer(nil))
+	}
+	return int(C.wc_Blake2bUpdate(b, sanIn, C.word32(sz)))
 }
 
 // Wc_Blake2bFinal finalizes the BLAKE2b digest.
 // out must have capacity >= requestSz.
 // Returns 0 on success, negative on error.
 func Wc_Blake2bFinal(b *C.struct_Blake2b, out []byte, requestSz int) int {
-    if requestSz < 0 || requestSz > len(out) {
-        return BAD_FUNC_ARG
-    }
-    if len(out) == 0 {
-        return BAD_FUNC_ARG
-    }
-    return int(C.wc_Blake2bFinal(b, (*C.byte)(unsafe.Pointer(&out[0])),
-        C.word32(requestSz)))
+	if requestSz < 0 || requestSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) == 0 {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Blake2bFinal(b, (*C.byte)(unsafe.Pointer(&out[0])),
+		C.word32(requestSz)))
 }

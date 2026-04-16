@@ -53,87 +53,131 @@ import "C"
 import "unsafe"
 
 func Wc_AesCtsEncrypt(key []byte, keySz int, out []byte, in []byte, inSz int, iv []byte) int {
-    if keySz < 0 || keySz > len(key) { return BAD_FUNC_ARG }
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < inSz { return BAD_FUNC_ARG }
-    if len(key) == 0 || len(iv) < AES_IV_SIZE { return BAD_FUNC_ARG }
-    if inSz == 0 { return 0 }
-    return int(C.wc_AesCtsEncrypt((*C.uchar)(unsafe.Pointer(&key[0])),
-               C.word32(keySz),
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(inSz),
-               (*C.uchar)(unsafe.Pointer(&iv[0]))))
+	if keySz != 16 && keySz != 24 && keySz != 32 {
+		return BAD_FUNC_ARG
+	}
+	if keySz < 0 || keySz > len(key) {
+		return BAD_FUNC_ARG
+	}
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < inSz {
+		return BAD_FUNC_ARG
+	}
+	if len(key) == 0 || len(iv) < AES_IV_SIZE {
+		return BAD_FUNC_ARG
+	}
+	if inSz < AES_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_AesCtsEncrypt((*C.uchar)(unsafe.Pointer(&key[0])),
+		C.word32(keySz),
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.word32(inSz),
+		(*C.uchar)(unsafe.Pointer(&iv[0]))))
 }
 
 func Wc_AesCtsDecrypt(key []byte, keySz int, out []byte, in []byte, inSz int, iv []byte) int {
-    if keySz < 0 || keySz > len(key) { return BAD_FUNC_ARG }
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < inSz { return BAD_FUNC_ARG }
-    if len(key) == 0 || len(iv) < AES_IV_SIZE { return BAD_FUNC_ARG }
-    if inSz == 0 { return 0 }
-    return int(C.wc_AesCtsDecrypt((*C.uchar)(unsafe.Pointer(&key[0])),
-               C.word32(keySz),
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(inSz),
-               (*C.uchar)(unsafe.Pointer(&iv[0]))))
+	if keySz != 16 && keySz != 24 && keySz != 32 {
+		return BAD_FUNC_ARG
+	}
+	if keySz < 0 || keySz > len(key) {
+		return BAD_FUNC_ARG
+	}
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < inSz {
+		return BAD_FUNC_ARG
+	}
+	if len(key) == 0 || len(iv) < AES_IV_SIZE {
+		return BAD_FUNC_ARG
+	}
+	if inSz < AES_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_AesCtsDecrypt((*C.uchar)(unsafe.Pointer(&key[0])),
+		C.word32(keySz),
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.word32(inSz),
+		(*C.uchar)(unsafe.Pointer(&iv[0]))))
 }
 
 func Wc_AesCtsEncryptUpdate(aes *C.struct_Aes, out []byte, outSz *int, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if outSz == nil { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var inPtr *C.uchar
-    if len(in) > 0 {
-        inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    cOutSz := C.word32(*outSz)
-    ret := int(C.wc_AesCtsEncryptUpdate(aes, outPtr, &cOutSz, inPtr, C.word32(inSz)))
-    *outSz = int(cOutSz)
-    return ret
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if outSz == nil {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < *outSz {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var inPtr *C.uchar
+	if len(in) > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	cOutSz := C.word32(*outSz)
+	ret := int(C.wc_AesCtsEncryptUpdate(aes, outPtr, &cOutSz, inPtr, C.word32(inSz)))
+	*outSz = int(cOutSz)
+	return ret
 }
 
 func Wc_AesCtsDecryptUpdate(aes *C.struct_Aes, out []byte, outSz *int, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if outSz == nil { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var inPtr *C.uchar
-    if len(in) > 0 {
-        inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    cOutSz := C.word32(*outSz)
-    ret := int(C.wc_AesCtsDecryptUpdate(aes, outPtr, &cOutSz, inPtr, C.word32(inSz)))
-    *outSz = int(cOutSz)
-    return ret
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if outSz == nil {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < *outSz {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var inPtr *C.uchar
+	if len(in) > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	cOutSz := C.word32(*outSz)
+	ret := int(C.wc_AesCtsDecryptUpdate(aes, outPtr, &cOutSz, inPtr, C.word32(inSz)))
+	*outSz = int(cOutSz)
+	return ret
 }
 
 func Wc_AesCtsEncryptFinal(aes *C.struct_Aes, out []byte, outSz *int) int {
-    if outSz == nil { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    cOutSz := C.word32(*outSz)
-    ret := int(C.wc_AesCtsEncryptFinal(aes, outPtr, &cOutSz))
-    *outSz = int(cOutSz)
-    return ret
+	if outSz == nil {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	cOutSz := C.word32(*outSz)
+	ret := int(C.wc_AesCtsEncryptFinal(aes, outPtr, &cOutSz))
+	*outSz = int(cOutSz)
+	return ret
 }
 
 func Wc_AesCtsDecryptFinal(aes *C.struct_Aes, out []byte, outSz *int) int {
-    if outSz == nil { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    cOutSz := C.word32(*outSz)
-    ret := int(C.wc_AesCtsDecryptFinal(aes, outPtr, &cOutSz))
-    *outSz = int(cOutSz)
-    return ret
+	if outSz == nil {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	cOutSz := C.word32(*outSz)
+	ret := int(C.wc_AesCtsDecryptFinal(aes, outPtr, &cOutSz))
+	*outSz = int(cOutSz)
+	return ret
 }

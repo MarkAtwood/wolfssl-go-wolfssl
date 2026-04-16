@@ -47,49 +47,77 @@ package wolfSSL
 import "C"
 import "unsafe"
 
-const COMPRESS_FIXED    = int(C.COMPRESS_FIXED)
+const COMPRESS_FIXED = int(C.COMPRESS_FIXED)
 const LIBZ_WINBITS_GZIP = int(C.LIBZ_WINBITS_GZIP)
 
 func Wc_Compress(out []byte, outSz int, in []byte, inSz int, flags int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if outSz < 0 || outSz > len(out) { return BAD_FUNC_ARG }
-    if inSz == 0 || outSz == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_Compress((*C.uchar)(unsafe.Pointer(&out[0])),
-               C.word32(outSz),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(inSz),
-               C.word32(flags)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if outSz <= 0 || outSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if inSz > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_Compress((*C.uchar)(unsafe.Pointer(&out[0])),
+		C.word32(outSz),
+		inPtr,
+		C.word32(inSz),
+		C.word32(flags)))
 }
 
 func Wc_Compress_ex(out []byte, outSz int, in []byte, inSz int, flags int, windowBits int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if outSz < 0 || outSz > len(out) { return BAD_FUNC_ARG }
-    if inSz == 0 || outSz == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_Compress_ex((*C.uchar)(unsafe.Pointer(&out[0])),
-               C.word32(outSz),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(inSz),
-               C.word32(flags),
-               C.word32(windowBits)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if outSz <= 0 || outSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if inSz > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_Compress_ex((*C.uchar)(unsafe.Pointer(&out[0])),
+		C.word32(outSz),
+		inPtr,
+		C.word32(inSz),
+		C.word32(flags),
+		C.word32(windowBits)))
 }
 
 func Wc_DeCompress(out []byte, outSz int, in []byte, inSz int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if outSz < 0 || outSz > len(out) { return BAD_FUNC_ARG }
-    if inSz == 0 || outSz == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_DeCompress((*C.uchar)(unsafe.Pointer(&out[0])),
-               C.word32(outSz),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(inSz)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if outSz <= 0 || outSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if inSz > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_DeCompress((*C.uchar)(unsafe.Pointer(&out[0])),
+		C.word32(outSz),
+		inPtr,
+		C.word32(inSz)))
 }
 
 func Wc_DeCompress_ex(out []byte, outSz int, in []byte, inSz int, windowBits int) int {
-    if inSz < 0 || inSz > len(in) { return BAD_FUNC_ARG }
-    if outSz < 0 || outSz > len(out) { return BAD_FUNC_ARG }
-    if inSz == 0 || outSz == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_DeCompress_ex((*C.uchar)(unsafe.Pointer(&out[0])),
-               C.word32(outSz),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.word32(inSz),
-               C.int(windowBits)))
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if outSz <= 0 || outSz > len(out) {
+		return BAD_FUNC_ARG
+	}
+	var inPtr *C.uchar
+	if inSz > 0 {
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	return int(C.wc_DeCompress_ex((*C.uchar)(unsafe.Pointer(&out[0])),
+		C.word32(outSz),
+		inPtr,
+		C.word32(inSz),
+		C.int(windowBits)))
 }

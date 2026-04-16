@@ -69,50 +69,68 @@ import "unsafe"
 // id selects the derived material: 1=key, 2=IV, 3=MAC key.
 // Returns 0 on success, negative wolfcrypt error code on failure.
 func Wc_PKCS12_PBKDF(out []byte, passwd []byte, passLen int, salt []byte, saltLen int,
-    iterations int, kLen int, hashType int, id int) int {
-    if passLen < 0 || passLen > len(passwd) { return BAD_FUNC_ARG }
-    if saltLen < 0 || saltLen > len(salt) { return BAD_FUNC_ARG }
-    if kLen < 0 || kLen > len(out) { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var passwdPtr *C.uchar
-    if len(passwd) > 0 {
-        passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
-    }
-    var saltPtr *C.uchar
-    if len(salt) > 0 {
-        saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
-    }
-    return int(C.wc_PKCS12_PBKDF(outPtr, passwdPtr, C.int(passLen),
-        saltPtr, C.int(saltLen), C.int(iterations),
-        C.int(kLen), C.int(hashType), C.int(id)))
+	iterations int, kLen int, hashType int, id int) int {
+	if passLen < 0 || passLen > len(passwd) {
+		return BAD_FUNC_ARG
+	}
+	if saltLen < 0 || saltLen > len(salt) {
+		return BAD_FUNC_ARG
+	}
+	if kLen < 0 || kLen > len(out) {
+		return BAD_FUNC_ARG
+	}
+	if iterations <= 0 {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var passwdPtr *C.uchar
+	if len(passwd) > 0 {
+		passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
+	}
+	var saltPtr *C.uchar
+	if len(salt) > 0 {
+		saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
+	}
+	return int(C.wc_PKCS12_PBKDF(outPtr, passwdPtr, C.int(passLen),
+		saltPtr, C.int(saltLen), C.int(iterations),
+		C.int(kLen), C.int(hashType), C.int(id)))
 }
 
 // Wc_PKCS12_PBKDF_ex is the extended form of Wc_PKCS12_PBKDF; heap is passed
 // as NULL (standard system allocator).
 // Returns 0 on success, negative wolfcrypt error code on failure.
 func Wc_PKCS12_PBKDF_ex(out []byte, passwd []byte, passLen int, salt []byte, saltLen int,
-    iterations int, kLen int, hashType int, id int) int {
-    if passLen < 0 || passLen > len(passwd) { return BAD_FUNC_ARG }
-    if saltLen < 0 || saltLen > len(salt) { return BAD_FUNC_ARG }
-    if kLen < 0 || kLen > len(out) { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var passwdPtr *C.uchar
-    if len(passwd) > 0 {
-        passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
-    }
-    var saltPtr *C.uchar
-    if len(salt) > 0 {
-        saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
-    }
-    return int(C.wc_PKCS12_PBKDF_ex(outPtr, passwdPtr, C.int(passLen),
-        saltPtr, C.int(saltLen), C.int(iterations),
-        C.int(kLen), C.int(hashType), C.int(id), unsafe.Pointer(nil)))
+	iterations int, kLen int, hashType int, id int) int {
+	if passLen < 0 || passLen > len(passwd) {
+		return BAD_FUNC_ARG
+	}
+	if saltLen < 0 || saltLen > len(salt) {
+		return BAD_FUNC_ARG
+	}
+	if kLen < 0 || kLen > len(out) {
+		return BAD_FUNC_ARG
+	}
+	if iterations <= 0 {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var passwdPtr *C.uchar
+	if len(passwd) > 0 {
+		passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
+	}
+	var saltPtr *C.uchar
+	if len(salt) > 0 {
+		saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
+	}
+	return int(C.wc_PKCS12_PBKDF_ex(outPtr, passwdPtr, C.int(passLen),
+		saltPtr, C.int(saltLen), C.int(iterations),
+		C.int(kLen), C.int(hashType), C.int(id), unsafe.Pointer(nil)))
 }
 
 // Wc_Scrypt derives a key using the scrypt KDF (RFC 7914).
@@ -121,25 +139,34 @@ func Wc_PKCS12_PBKDF_ex(out []byte, passwd []byte, passLen int, salt []byte, sal
 // Returns 0 on success, negative wolfcrypt error code on failure.
 // Returns -174 (NOT_COMPILED_IN) if wolfSSL was built without HAVE_SCRYPT.
 func Wc_Scrypt(out []byte, passwd []byte, passLen int, salt []byte, saltLen int,
-    cost int, blockSize int, parallel int, dkLen int) int {
-    if passLen < 0 || passLen > len(passwd) { return BAD_FUNC_ARG }
-    if saltLen < 0 || saltLen > len(salt) { return BAD_FUNC_ARG }
-    if dkLen < 0 || dkLen > len(out) { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var passwdPtr *C.uchar
-    if len(passwd) > 0 {
-        passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
-    }
-    var saltPtr *C.uchar
-    if len(salt) > 0 {
-        saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
-    }
-    return int(C.wc_scrypt(outPtr, passwdPtr, C.int(passLen),
-        saltPtr, C.int(saltLen), C.int(cost),
-        C.int(blockSize), C.int(parallel), C.int(dkLen)))
+	cost int, blockSize int, parallel int, dkLen int) int {
+	if passLen < 0 || passLen > len(passwd) {
+		return BAD_FUNC_ARG
+	}
+	if saltLen < 0 || saltLen > len(salt) {
+		return BAD_FUNC_ARG
+	}
+	if dkLen < 0 || dkLen > len(out) {
+		return BAD_FUNC_ARG
+	}
+	if cost <= 0 {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var passwdPtr *C.uchar
+	if len(passwd) > 0 {
+		passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
+	}
+	var saltPtr *C.uchar
+	if len(salt) > 0 {
+		saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
+	}
+	return int(C.wc_scrypt(outPtr, passwdPtr, C.int(passLen),
+		saltPtr, C.int(saltLen), C.int(cost),
+		C.int(blockSize), C.int(parallel), C.int(dkLen)))
 }
 
 // Wc_Scrypt_ex derives a key using the scrypt KDF with an explicit iterations
@@ -148,23 +175,32 @@ func Wc_Scrypt(out []byte, passwd []byte, passLen int, salt []byte, saltLen int,
 // Returns 0 on success, negative wolfcrypt error code on failure.
 // Returns -174 (NOT_COMPILED_IN) if wolfSSL was built without HAVE_SCRYPT.
 func Wc_Scrypt_ex(out []byte, passwd []byte, passLen int, salt []byte, saltLen int,
-    iterations int, blockSize int, parallel int, dkLen int) int {
-    if passLen < 0 || passLen > len(passwd) { return BAD_FUNC_ARG }
-    if saltLen < 0 || saltLen > len(salt) { return BAD_FUNC_ARG }
-    if dkLen < 0 || dkLen > len(out) { return BAD_FUNC_ARG }
-    var outPtr *C.uchar
-    if len(out) > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var passwdPtr *C.uchar
-    if len(passwd) > 0 {
-        passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
-    }
-    var saltPtr *C.uchar
-    if len(salt) > 0 {
-        saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
-    }
-    return int(C.wc_scrypt_ex(outPtr, passwdPtr, C.int(passLen),
-        saltPtr, C.int(saltLen), C.word32(iterations),
-        C.int(blockSize), C.int(parallel), C.int(dkLen)))
+	iterations int, blockSize int, parallel int, dkLen int) int {
+	if passLen < 0 || passLen > len(passwd) {
+		return BAD_FUNC_ARG
+	}
+	if saltLen < 0 || saltLen > len(salt) {
+		return BAD_FUNC_ARG
+	}
+	if dkLen < 0 || dkLen > len(out) {
+		return BAD_FUNC_ARG
+	}
+	if iterations <= 0 {
+		return BAD_FUNC_ARG
+	}
+	var outPtr *C.uchar
+	if len(out) > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var passwdPtr *C.uchar
+	if len(passwd) > 0 {
+		passwdPtr = (*C.uchar)(unsafe.Pointer(&passwd[0]))
+	}
+	var saltPtr *C.uchar
+	if len(salt) > 0 {
+		saltPtr = (*C.uchar)(unsafe.Pointer(&salt[0]))
+	}
+	return int(C.wc_scrypt_ex(outPtr, passwdPtr, C.int(passLen),
+		saltPtr, C.int(saltLen), C.word32(iterations),
+		C.int(blockSize), C.int(parallel), C.int(dkLen)))
 }

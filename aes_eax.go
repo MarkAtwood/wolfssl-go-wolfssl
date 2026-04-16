@@ -105,7 +105,7 @@ package wolfSSL
 // #endif
 import "C"
 import (
-    "unsafe"
+	"unsafe"
 )
 
 // AES_EAX_AUTH_E is returned by Wc_AesEaxDecryptFinal when the authentication
@@ -125,29 +125,29 @@ type AesEax = C.struct_AesEax
 // the Init step (pass nil and authInSz=0 if none); authInSz must be
 // <= len(authIn). Returns 0 on success.
 func Wc_AesEaxInit(eax *AesEax,
-    key []byte, keySz int,
-    nonce []byte, nonceSz int,
-    authIn []byte, authInSz int) int {
-    if keySz < 0 || keySz > len(key) {
-        return BAD_FUNC_ARG
-    }
-    if nonceSz < 0 || nonceSz > len(nonce) {
-        return BAD_FUNC_ARG
-    }
-    if authInSz < 0 || authInSz > len(authIn) {
-        return BAD_FUNC_ARG
-    }
-    if keySz == 0 || nonceSz == 0 {
-        return BAD_FUNC_ARG
-    }
-    var sanAuthIn *C.uchar
-    if authInSz > 0 {
-        sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
-    }
-    return int(C.wc_AesEaxInit_shim(eax,
-        (*C.uchar)(unsafe.Pointer(&key[0])), C.word32(keySz),
-        (*C.uchar)(unsafe.Pointer(&nonce[0])), C.word32(nonceSz),
-        sanAuthIn, C.word32(authInSz)))
+	key []byte, keySz int,
+	nonce []byte, nonceSz int,
+	authIn []byte, authInSz int) int {
+	if keySz < 0 || keySz > len(key) {
+		return BAD_FUNC_ARG
+	}
+	if nonceSz < 0 || nonceSz > len(nonce) {
+		return BAD_FUNC_ARG
+	}
+	if authInSz < 0 || authInSz > len(authIn) {
+		return BAD_FUNC_ARG
+	}
+	if keySz == 0 || nonceSz == 0 {
+		return BAD_FUNC_ARG
+	}
+	var sanAuthIn *C.uchar
+	if authInSz > 0 {
+		sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
+	}
+	return int(C.wc_AesEaxInit_shim(eax,
+		(*C.uchar)(unsafe.Pointer(&key[0])), C.word32(keySz),
+		(*C.uchar)(unsafe.Pointer(&nonce[0])), C.word32(nonceSz),
+		sanAuthIn, C.word32(authInSz)))
 }
 
 // Wc_AesEaxEncryptUpdate encrypts inSz bytes from in into out, and optionally
@@ -156,33 +156,33 @@ func Wc_AesEaxInit(eax *AesEax,
 // pass nil/0 if there is no additional data for this call. Returns 0 on
 // success.
 func Wc_AesEaxEncryptUpdate(eax *AesEax,
-    out []byte,
-    in []byte, inSz int,
-    authIn []byte, authInSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    if len(out) < inSz {
-        return BAD_FUNC_ARG
-    }
-    if authInSz < 0 || authInSz > len(authIn) {
-        return BAD_FUNC_ARG
-    }
-    var sanOut *C.uchar
-    if inSz > 0 {
-        sanOut = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var sanIn *C.uchar
-    if inSz > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    var sanAuthIn *C.uchar
-    if authInSz > 0 {
-        sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
-    }
-    return int(C.wc_AesEaxEncryptUpdate_shim(eax,
-        sanOut, sanIn, C.word32(inSz),
-        sanAuthIn, C.word32(authInSz)))
+	out []byte,
+	in []byte, inSz int,
+	authIn []byte, authInSz int) int {
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < inSz {
+		return BAD_FUNC_ARG
+	}
+	if authInSz < 0 || authInSz > len(authIn) {
+		return BAD_FUNC_ARG
+	}
+	var sanOut *C.uchar
+	if inSz > 0 {
+		sanOut = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var sanIn *C.uchar
+	if inSz > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	var sanAuthIn *C.uchar
+	if authInSz > 0 {
+		sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
+	}
+	return int(C.wc_AesEaxEncryptUpdate_shim(eax,
+		sanOut, sanIn, C.word32(inSz),
+		sanAuthIn, C.word32(authInSz)))
 }
 
 // Wc_AesEaxDecryptUpdate decrypts inSz bytes from in into out, and optionally
@@ -191,61 +191,61 @@ func Wc_AesEaxEncryptUpdate(eax *AesEax,
 // pass nil/0 if there is no additional data for this call. Returns 0 on
 // success.
 func Wc_AesEaxDecryptUpdate(eax *AesEax,
-    out []byte,
-    in []byte, inSz int,
-    authIn []byte, authInSz int) int {
-    if inSz < 0 || inSz > len(in) {
-        return BAD_FUNC_ARG
-    }
-    if len(out) < inSz {
-        return BAD_FUNC_ARG
-    }
-    if authInSz < 0 || authInSz > len(authIn) {
-        return BAD_FUNC_ARG
-    }
-    var sanOut *C.uchar
-    if inSz > 0 {
-        sanOut = (*C.uchar)(unsafe.Pointer(&out[0]))
-    }
-    var sanIn *C.uchar
-    if inSz > 0 {
-        sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    var sanAuthIn *C.uchar
-    if authInSz > 0 {
-        sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
-    }
-    return int(C.wc_AesEaxDecryptUpdate_shim(eax,
-        sanOut, sanIn, C.word32(inSz),
-        sanAuthIn, C.word32(authInSz)))
+	out []byte,
+	in []byte, inSz int,
+	authIn []byte, authInSz int) int {
+	if inSz < 0 || inSz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < inSz {
+		return BAD_FUNC_ARG
+	}
+	if authInSz < 0 || authInSz > len(authIn) {
+		return BAD_FUNC_ARG
+	}
+	var sanOut *C.uchar
+	if inSz > 0 {
+		sanOut = (*C.uchar)(unsafe.Pointer(&out[0]))
+	}
+	var sanIn *C.uchar
+	if inSz > 0 {
+		sanIn = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	var sanAuthIn *C.uchar
+	if authInSz > 0 {
+		sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
+	}
+	return int(C.wc_AesEaxDecryptUpdate_shim(eax,
+		sanOut, sanIn, C.word32(inSz),
+		sanAuthIn, C.word32(authInSz)))
 }
 
 // Wc_AesEaxAuthDataUpdate feeds authInSz bytes of additional authenticated
 // data without producing any output. authInSz must be <= len(authIn).
 // Returns 0 on success.
 func Wc_AesEaxAuthDataUpdate(eax *AesEax, authIn []byte, authInSz int) int {
-    if authInSz < 0 || authInSz > len(authIn) {
-        return BAD_FUNC_ARG
-    }
-    var sanAuthIn *C.uchar
-    if authInSz > 0 {
-        sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
-    }
-    return int(C.wc_AesEaxAuthDataUpdate_shim(eax, sanAuthIn, C.word32(authInSz)))
+	if authInSz < 0 || authInSz > len(authIn) {
+		return BAD_FUNC_ARG
+	}
+	var sanAuthIn *C.uchar
+	if authInSz > 0 {
+		sanAuthIn = (*C.uchar)(unsafe.Pointer(&authIn[0]))
+	}
+	return int(C.wc_AesEaxAuthDataUpdate_shim(eax, sanAuthIn, C.word32(authInSz)))
 }
 
 // Wc_AesEaxEncryptFinal finalises encryption and writes the authentication tag
 // into authTag. authTagSz must be in [1, AES_BLOCK_SIZE] and <= len(authTag).
 // Returns 0 on success. Call Wc_AesEaxFree after this.
 func Wc_AesEaxEncryptFinal(eax *AesEax, authTag []byte, authTagSz int) int {
-    if authTagSz < 1 || authTagSz > AES_BLOCK_SIZE {
-        return BAD_FUNC_ARG
-    }
-    if authTagSz > len(authTag) {
-        return BAD_FUNC_ARG
-    }
-    return int(C.wc_AesEaxEncryptFinal_shim(eax,
-        (*C.uchar)(unsafe.Pointer(&authTag[0])), C.word32(authTagSz)))
+	if authTagSz < 1 || authTagSz > AES_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	if authTagSz > len(authTag) {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_AesEaxEncryptFinal_shim(eax,
+		(*C.uchar)(unsafe.Pointer(&authTag[0])), C.word32(authTagSz)))
 }
 
 // Wc_AesEaxDecryptFinal verifies the authentication tag in authTag against the
@@ -253,19 +253,19 @@ func Wc_AesEaxEncryptFinal(eax *AesEax, authTag []byte, authTagSz int) int {
 // <= len(authTag). Returns 0 on success, AES_EAX_AUTH_E (-122) on tag
 // mismatch. Call Wc_AesEaxFree after this regardless of the return value.
 func Wc_AesEaxDecryptFinal(eax *AesEax, authTag []byte, authTagSz int) int {
-    if authTagSz < 1 || authTagSz > AES_BLOCK_SIZE {
-        return BAD_FUNC_ARG
-    }
-    if authTagSz > len(authTag) {
-        return BAD_FUNC_ARG
-    }
-    return int(C.wc_AesEaxDecryptFinal_shim(eax,
-        (*C.uchar)(unsafe.Pointer(&authTag[0])), C.word32(authTagSz)))
+	if authTagSz < 1 || authTagSz > AES_BLOCK_SIZE {
+		return BAD_FUNC_ARG
+	}
+	if authTagSz > len(authTag) {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_AesEaxDecryptFinal_shim(eax,
+		(*C.uchar)(unsafe.Pointer(&authTag[0])), C.word32(authTagSz)))
 }
 
 // Wc_AesEaxFree releases resources held by the AES-EAX context. Must be
 // called after Wc_AesEaxEncryptFinal or Wc_AesEaxDecryptFinal (or on any
 // error path after a successful Wc_AesEaxInit). Returns 0 on success.
 func Wc_AesEaxFree(eax *AesEax) int {
-    return int(C.wc_AesEaxFree_shim(eax))
+	return int(C.wc_AesEaxFree_shim(eax))
 }

@@ -96,139 +96,199 @@ package wolfSSL
 import "C"
 import "unsafe"
 
-const SM4_KEY_SIZE   = int(C.SM4_KEY_SIZE)
-const SM4_IV_SIZE    = int(C.SM4_IV_SIZE)
+const SM4_KEY_SIZE = int(C.SM4_KEY_SIZE)
+const SM4_IV_SIZE = int(C.SM4_IV_SIZE)
 const SM4_BLOCK_SIZE = int(C.SM4_BLOCK_SIZE)
 
 type Wc_Sm4 = C.struct_wc_Sm4
 
 func Wc_Sm4Init(sm4 *C.struct_wc_Sm4, devId int) int {
-    return int(C.wc_Sm4Init(sm4, unsafe.Pointer(nil), C.int(devId)))
+	return int(C.wc_Sm4Init(sm4, unsafe.Pointer(nil), C.int(devId)))
 }
 
 func Wc_Sm4Free(sm4 *C.struct_wc_Sm4) {
-    C.wc_Sm4Free(sm4)
+	C.wc_Sm4Free(sm4)
 }
 
 func Wc_Sm4SetKey(sm4 *C.struct_wc_Sm4, key []byte, length int) int {
-    if length < 0 || length > len(key) { return BAD_FUNC_ARG }
-    if len(key) == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_Sm4SetKey(sm4, (*C.uchar)(unsafe.Pointer(&key[0])),
-               C.uint(length)))
+	if length < 0 || length > len(key) {
+		return BAD_FUNC_ARG
+	}
+	if len(key) == 0 {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Sm4SetKey(sm4, (*C.uchar)(unsafe.Pointer(&key[0])),
+		C.uint(length)))
 }
 
 func Wc_Sm4SetIV(sm4 *C.struct_wc_Sm4, iv []byte) int {
-    if len(iv) < SM4_IV_SIZE { return BAD_FUNC_ARG }
-    return int(C.wc_Sm4SetIV(sm4, (*C.uchar)(unsafe.Pointer(&iv[0]))))
+	if len(iv) < SM4_IV_SIZE {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Sm4SetIV(sm4, (*C.uchar)(unsafe.Pointer(&iv[0]))))
 }
 
 func Wc_Sm4EcbEncrypt(sm4 *C.struct_wc_Sm4, out []byte, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if sz == 0 { return 0 }
-    return int(C.wc_Sm4EcbEncrypt(sm4,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.uint(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if sz == 0 {
+		return 0
+	}
+	return int(C.wc_Sm4EcbEncrypt(sm4,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.uint(sz)))
 }
 
 func Wc_Sm4EcbDecrypt(sm4 *C.struct_wc_Sm4, out []byte, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if sz == 0 { return 0 }
-    return int(C.wc_Sm4EcbDecrypt(sm4,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.uint(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if sz == 0 {
+		return 0
+	}
+	return int(C.wc_Sm4EcbDecrypt(sm4,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.uint(sz)))
 }
 
 func Wc_Sm4CbcEncrypt(sm4 *C.struct_wc_Sm4, out []byte, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if sz == 0 { return 0 }
-    return int(C.wc_Sm4CbcEncrypt(sm4,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.uint(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if sz == 0 {
+		return 0
+	}
+	return int(C.wc_Sm4CbcEncrypt(sm4,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.uint(sz)))
 }
 
 func Wc_Sm4CbcDecrypt(sm4 *C.struct_wc_Sm4, out []byte, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if sz == 0 { return 0 }
-    return int(C.wc_Sm4CbcDecrypt(sm4,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.uint(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if sz == 0 {
+		return 0
+	}
+	return int(C.wc_Sm4CbcDecrypt(sm4,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.uint(sz)))
 }
 
 func Wc_Sm4CtrEncrypt(sm4 *C.struct_wc_Sm4, out []byte, in []byte, sz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if sz == 0 { return 0 }
-    return int(C.wc_Sm4CtrEncrypt(sm4,
-               (*C.uchar)(unsafe.Pointer(&out[0])),
-               (*C.uchar)(unsafe.Pointer(&in[0])),
-               C.uint(sz)))
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if sz == 0 {
+		return 0
+	}
+	return int(C.wc_Sm4CtrEncrypt(sm4,
+		(*C.uchar)(unsafe.Pointer(&out[0])),
+		(*C.uchar)(unsafe.Pointer(&in[0])),
+		C.uint(sz)))
 }
 
 func Wc_Sm4GcmSetKey(sm4 *C.struct_wc_Sm4, key []byte, length int) int {
-    if length < 0 || length > len(key) { return BAD_FUNC_ARG }
-    if len(key) == 0 { return BAD_FUNC_ARG }
-    return int(C.wc_Sm4GcmSetKey(sm4, (*C.uchar)(unsafe.Pointer(&key[0])),
-               C.uint(length)))
+	if length < 0 || length > len(key) {
+		return BAD_FUNC_ARG
+	}
+	if len(key) == 0 {
+		return BAD_FUNC_ARG
+	}
+	return int(C.wc_Sm4GcmSetKey(sm4, (*C.uchar)(unsafe.Pointer(&key[0])),
+		C.uint(length)))
 }
 
 func Wc_Sm4GcmEncrypt(sm4 *C.struct_wc_Sm4, out []byte, in []byte, sz int,
-    iv []byte, ivSz int, authTag []byte, authTagSz int,
-    authIn []byte, authInSz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if ivSz < 0 || ivSz > len(iv) { return BAD_FUNC_ARG }
-    if authTagSz < 0 || authTagSz > len(authTag) { return BAD_FUNC_ARG }
-    if authInSz < 0 || authInSz > len(authIn) { return BAD_FUNC_ARG }
-    var outPtr, inPtr, ivPtr, authTagPtr, authInPtr *C.uchar
-    if sz > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-        inPtr  = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    if ivSz > 0 {
-        ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
-    }
-    if authTagSz > 0 {
-        authTagPtr = (*C.uchar)(unsafe.Pointer(&authTag[0]))
-    }
-    if authInSz > 0 {
-        authInPtr = (*C.uchar)(unsafe.Pointer(&authIn[0]))
-    }
-    return int(C.wc_Sm4GcmEncrypt(sm4, outPtr, inPtr, C.uint(sz),
-               ivPtr, C.uint(ivSz), authTagPtr, C.uint(authTagSz),
-               authInPtr, C.uint(authInSz)))
+	iv []byte, ivSz int, authTag []byte, authTagSz int,
+	authIn []byte, authInSz int) int {
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if ivSz < 0 || ivSz > len(iv) {
+		return BAD_FUNC_ARG
+	}
+	if authTagSz < 0 || authTagSz > len(authTag) {
+		return BAD_FUNC_ARG
+	}
+	if authInSz < 0 || authInSz > len(authIn) {
+		return BAD_FUNC_ARG
+	}
+	var outPtr, inPtr, ivPtr, authTagPtr, authInPtr *C.uchar
+	if sz > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	if ivSz > 0 {
+		ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
+	}
+	if authTagSz > 0 {
+		authTagPtr = (*C.uchar)(unsafe.Pointer(&authTag[0]))
+	}
+	if authInSz > 0 {
+		authInPtr = (*C.uchar)(unsafe.Pointer(&authIn[0]))
+	}
+	return int(C.wc_Sm4GcmEncrypt(sm4, outPtr, inPtr, C.uint(sz),
+		ivPtr, C.uint(ivSz), authTagPtr, C.uint(authTagSz),
+		authInPtr, C.uint(authInSz)))
 }
 
 func Wc_Sm4GcmDecrypt(sm4 *C.struct_wc_Sm4, out []byte, in []byte, sz int,
-    iv []byte, ivSz int, authTag []byte, authTagSz int,
-    authIn []byte, authInSz int) int {
-    if sz < 0 || sz > len(in) { return BAD_FUNC_ARG }
-    if len(out) < sz { return BAD_FUNC_ARG }
-    if ivSz < 0 || ivSz > len(iv) { return BAD_FUNC_ARG }
-    if authTagSz < 0 || authTagSz > len(authTag) { return BAD_FUNC_ARG }
-    if authInSz < 0 || authInSz > len(authIn) { return BAD_FUNC_ARG }
-    var outPtr, inPtr, ivPtr, authTagPtr, authInPtr *C.uchar
-    if sz > 0 {
-        outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
-        inPtr  = (*C.uchar)(unsafe.Pointer(&in[0]))
-    }
-    if ivSz > 0 {
-        ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
-    }
-    if authTagSz > 0 {
-        authTagPtr = (*C.uchar)(unsafe.Pointer(&authTag[0]))
-    }
-    if authInSz > 0 {
-        authInPtr = (*C.uchar)(unsafe.Pointer(&authIn[0]))
-    }
-    return int(C.wc_Sm4GcmDecrypt(sm4, outPtr, inPtr, C.uint(sz),
-               ivPtr, C.uint(ivSz), authTagPtr, C.uint(authTagSz),
-               authInPtr, C.uint(authInSz)))
+	iv []byte, ivSz int, authTag []byte, authTagSz int,
+	authIn []byte, authInSz int) int {
+	if sz < 0 || sz > len(in) {
+		return BAD_FUNC_ARG
+	}
+	if len(out) < sz {
+		return BAD_FUNC_ARG
+	}
+	if ivSz < 0 || ivSz > len(iv) {
+		return BAD_FUNC_ARG
+	}
+	if authTagSz < 0 || authTagSz > len(authTag) {
+		return BAD_FUNC_ARG
+	}
+	if authInSz < 0 || authInSz > len(authIn) {
+		return BAD_FUNC_ARG
+	}
+	var outPtr, inPtr, ivPtr, authTagPtr, authInPtr *C.uchar
+	if sz > 0 {
+		outPtr = (*C.uchar)(unsafe.Pointer(&out[0]))
+		inPtr = (*C.uchar)(unsafe.Pointer(&in[0]))
+	}
+	if ivSz > 0 {
+		ivPtr = (*C.uchar)(unsafe.Pointer(&iv[0]))
+	}
+	if authTagSz > 0 {
+		authTagPtr = (*C.uchar)(unsafe.Pointer(&authTag[0]))
+	}
+	if authInSz > 0 {
+		authInPtr = (*C.uchar)(unsafe.Pointer(&authIn[0]))
+	}
+	return int(C.wc_Sm4GcmDecrypt(sm4, outPtr, inPtr, C.uint(sz),
+		ivPtr, C.uint(ivSz), authTagPtr, C.uint(authTagSz),
+		authInPtr, C.uint(authInSz)))
 }
