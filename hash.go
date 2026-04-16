@@ -35,6 +35,12 @@ package wolfSSL
 //      return -174;
 //  }
 // #endif
+// #ifndef WOLFSSL_SHA224
+// #define WC_SHA224_DIGEST_SIZE 1
+// int wc_Sha224Hash(const byte* data, word32 len, byte* hash) {
+//      return -174;
+//  }
+// #endif
 // #ifdef NO_SHA256
 // #define WC_SHA256_DIGEST_SIZE 1
 // int wc_Sha256Hash(const byte* data, word32 len, byte* hash) {
@@ -53,6 +59,20 @@ package wolfSSL
 //      return -174;
 //  }
 // #endif
+// #ifndef WOLFSSL_SHA3
+// int wc_Sha3_224Hash(const byte* data, word32 len, byte* hash) {
+//      (void)data; (void)len; (void)hash; return -174;
+//  }
+// int wc_Sha3_256Hash(const byte* data, word32 len, byte* hash) {
+//      (void)data; (void)len; (void)hash; return -174;
+//  }
+// int wc_Sha3_384Hash(const byte* data, word32 len, byte* hash) {
+//      (void)data; (void)len; (void)hash; return -174;
+//  }
+// int wc_Sha3_512Hash(const byte* data, word32 len, byte* hash) {
+//      (void)data; (void)len; (void)hash; return -174;
+//  }
+// #endif
 import "C"
 import (
     "unsafe"
@@ -60,6 +80,7 @@ import (
 
 const WC_MD5_DIGEST_SIZE = int(C.WC_MD5_DIGEST_SIZE)
 const WC_SHA_DIGEST_SIZE = int(C.WC_SHA_DIGEST_SIZE)
+const WC_SHA224_DIGEST_SIZE = int(C.WC_SHA224_DIGEST_SIZE)
 const WC_SHA256_DIGEST_SIZE = int(C.WC_SHA256_DIGEST_SIZE)
 const WC_SHA384_DIGEST_SIZE = int(C.WC_SHA384_DIGEST_SIZE)
 const WC_SHA512_DIGEST_SIZE = int(C.WC_SHA512_DIGEST_SIZE)
@@ -85,6 +106,17 @@ func Wc_ShaHash(input []byte, inputSz int, output []byte) int {
         sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
     }
     return int(C.wc_ShaHash(sanIn,
+               C.word32(inputSz), (*C.uchar)(unsafe.Pointer(&output[0]))))
+}
+
+func Wc_Sha224Hash(input []byte, inputSz int, output []byte) int {
+    if inputSz < 0 || inputSz > len(input) { return BAD_FUNC_ARG }
+    if len(output) < WC_SHA224_DIGEST_SIZE { return BAD_FUNC_ARG }
+    var sanIn *C.uchar
+    if len(input) > 0 {
+        sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
+    }
+    return int(C.wc_Sha224Hash(sanIn,
                C.word32(inputSz), (*C.uchar)(unsafe.Pointer(&output[0]))))
 }
 
@@ -118,5 +150,49 @@ func Wc_Sha512Hash(input []byte, inputSz int, output []byte) int {
         sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
     }
     return int(C.wc_Sha512Hash(sanIn,
+               C.word32(inputSz), (*C.uchar)(unsafe.Pointer(&output[0]))))
+}
+
+func Wc_Sha3_224Hash(input []byte, inputSz int, output []byte) int {
+    if inputSz < 0 || inputSz > len(input) { return BAD_FUNC_ARG }
+    if len(output) < WC_SHA3_224_DIGEST_SIZE { return BAD_FUNC_ARG }
+    var sanIn *C.uchar
+    if len(input) > 0 {
+        sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
+    }
+    return int(C.wc_Sha3_224Hash(sanIn,
+               C.word32(inputSz), (*C.uchar)(unsafe.Pointer(&output[0]))))
+}
+
+func Wc_Sha3_256Hash(input []byte, inputSz int, output []byte) int {
+    if inputSz < 0 || inputSz > len(input) { return BAD_FUNC_ARG }
+    if len(output) < WC_SHA3_256_DIGEST_SIZE { return BAD_FUNC_ARG }
+    var sanIn *C.uchar
+    if len(input) > 0 {
+        sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
+    }
+    return int(C.wc_Sha3_256Hash(sanIn,
+               C.word32(inputSz), (*C.uchar)(unsafe.Pointer(&output[0]))))
+}
+
+func Wc_Sha3_384Hash(input []byte, inputSz int, output []byte) int {
+    if inputSz < 0 || inputSz > len(input) { return BAD_FUNC_ARG }
+    if len(output) < WC_SHA3_384_DIGEST_SIZE { return BAD_FUNC_ARG }
+    var sanIn *C.uchar
+    if len(input) > 0 {
+        sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
+    }
+    return int(C.wc_Sha3_384Hash(sanIn,
+               C.word32(inputSz), (*C.uchar)(unsafe.Pointer(&output[0]))))
+}
+
+func Wc_Sha3_512Hash(input []byte, inputSz int, output []byte) int {
+    if inputSz < 0 || inputSz > len(input) { return BAD_FUNC_ARG }
+    if len(output) < WC_SHA3_512_DIGEST_SIZE { return BAD_FUNC_ARG }
+    var sanIn *C.uchar
+    if len(input) > 0 {
+        sanIn = (*C.uchar)(unsafe.Pointer(&input[0]))
+    }
+    return int(C.wc_Sha3_512Hash(sanIn,
                C.word32(inputSz), (*C.uchar)(unsafe.Pointer(&output[0]))))
 }
