@@ -277,8 +277,10 @@ func Wc_DhGenerateKeyPair(key *C.DhKey, rng *C.struct_WC_RNG,
 	ret := int(C.go_wc_DhGenerateKeyPair(key, rng,
 		(*C.byte)(unsafe.Pointer(&priv[0])), &cPrivSz,
 		(*C.byte)(unsafe.Pointer(&pub[0])), &cPubSz))
-	*privSz = int(cPrivSz)
-	*pubSz = int(cPubSz)
+	if ret == 0 {
+		*privSz = int(cPrivSz)
+		*pubSz = int(cPubSz)
+	}
 	return ret
 }
 
@@ -311,7 +313,9 @@ func Wc_DhAgree(key *C.DhKey,
 		(*C.byte)(unsafe.Pointer(&agree[0])), &cAgreeSz,
 		(*C.byte)(unsafe.Pointer(&priv[0])), C.word32(privSz),
 		(*C.byte)(unsafe.Pointer(&pub[0])), C.word32(pubSz)))
-	*agreeSz = int(cAgreeSz)
+	if ret == 0 {
+		*agreeSz = int(cAgreeSz)
+	}
 	return ret
 }
 
@@ -438,10 +442,12 @@ func Wc_DhExportParamsRaw(dh *C.DhKey,
 		(*C.byte)(unsafe.Pointer(&p[0])), &cPSz,
 		qPtr, cQSzPtr,
 		(*C.byte)(unsafe.Pointer(&g[0])), &cGSz))
-	*pSz = int(cPSz)
-	*gSz = int(cGSz)
-	if qSz != nil && cQSzPtr != nil {
-		*qSz = int(cQSz)
+	if ret == 0 {
+		*pSz = int(cPSz)
+		*gSz = int(cGSz)
+		if qSz != nil && cQSzPtr != nil {
+			*qSz = int(cQSz)
+		}
 	}
 	return ret
 }

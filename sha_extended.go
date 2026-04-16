@@ -40,7 +40,6 @@ package wolfSSL
 // #endif
 //
 // #ifndef WOLFSSL_SHA224
-// #define WC_SHA224_DIGEST_SIZE 1
 // static int wc_go_InitSha224(struct wc_Sha256* sha) { (void)sha; return -174; }
 // static int wc_go_Sha224Update(struct wc_Sha256* sha, const byte* d, word32 l) { (void)sha; (void)d; (void)l; return -174; }
 // static int wc_go_Sha224Final(struct wc_Sha256* sha, byte* h) { (void)sha; (void)h; return -174; }
@@ -53,7 +52,6 @@ package wolfSSL
 // #endif
 //
 // #ifndef WOLFSSL_SHA384
-// #define WC_SHA384_DIGEST_SIZE_STUB 1
 // static int wc_go_InitSha384(struct wc_Sha512* sha) { (void)sha; return -174; }
 // static int wc_go_Sha384Update(struct wc_Sha512* sha, const byte* d, word32 l) { (void)sha; (void)d; (void)l; return -174; }
 // static int wc_go_Sha384Final(struct wc_Sha512* sha, byte* h) { (void)sha; (void)h; return -174; }
@@ -66,7 +64,6 @@ package wolfSSL
 // #endif
 //
 // #ifndef WOLFSSL_SHA512
-// #define WC_SHA512_DIGEST_SIZE_STUB 1
 // static int wc_go_InitSha512(wc_Sha512* sha) { (void)sha; return -174; }
 // static int wc_go_Sha512Update(wc_Sha512* sha, const byte* d, word32 l) { (void)sha; (void)d; (void)l; return -174; }
 // static int wc_go_Sha512Final(wc_Sha512* sha, byte* h) { (void)sha; (void)h; return -174; }

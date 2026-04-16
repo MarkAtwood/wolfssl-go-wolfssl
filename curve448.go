@@ -122,7 +122,7 @@ package wolfSSL
 // static int go_wc_curve448_import_public_raw(const byte* in, word32 inLen,
 //                                             curve448_key* key) {
 // #ifdef HAVE_CURVE448
-//     return wc_curve448_import_public(in, inLen, key);
+//     return wc_curve448_import_public_ex(in, inLen, key, EC448_LITTLE_ENDIAN);
 // #else
 //     return NOT_COMPILED_IN;
 // #endif
@@ -151,7 +151,7 @@ package wolfSSL
 // static int go_wc_curve448_export_public_raw(curve448_key* key, byte* out,
 //                                             word32* outLen) {
 // #ifdef HAVE_CURVE448
-//     return wc_curve448_export_public(key, out, outLen);
+//     return wc_curve448_export_public_ex(key, out, outLen, EC448_LITTLE_ENDIAN);
 // #else
 //     return NOT_COMPILED_IN;
 // #endif
