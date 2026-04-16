@@ -47,6 +47,38 @@ package wolfSSL
 //      return -174;
 // }
 // #endif
+// #if defined(HAVE_CHACHA) && defined(HAVE_POLY1305)
+// static int wc_ChaCha20Poly1305_Init_shim(ChaChaPoly_Aead* aead,
+//     const byte* inKey, const byte* inIV, int isEncrypt) {
+//     return wc_ChaCha20Poly1305_Init(aead, inKey, inIV, isEncrypt);
+// }
+// static int wc_ChaCha20Poly1305_Final_shim(ChaChaPoly_Aead* aead,
+//     byte* outAuthTag) {
+//     return wc_ChaCha20Poly1305_Final(aead, outAuthTag);
+// }
+// #else
+// typedef struct ChaChaPoly_Aead {} ChaChaPoly_Aead;
+// static int wc_ChaCha20Poly1305_Init_shim(ChaChaPoly_Aead* aead,
+//     const byte* inKey, const byte* inIV, int isEncrypt) {
+//     (void)aead; (void)inKey; (void)inIV; (void)isEncrypt;
+//     return -174;
+// }
+// static int wc_ChaCha20Poly1305_UpdateAad(ChaChaPoly_Aead* aead,
+//     const byte* inAAD, word32 inAADLen) {
+//     (void)aead; (void)inAAD; (void)inAADLen;
+//     return -174;
+// }
+// static int wc_ChaCha20Poly1305_UpdateData(ChaChaPoly_Aead* aead,
+//     const byte* inData, byte* outData, word32 dataLen) {
+//     (void)aead; (void)inData; (void)outData; (void)dataLen;
+//     return -174;
+// }
+// static int wc_ChaCha20Poly1305_Final_shim(ChaChaPoly_Aead* aead,
+//     byte* outAuthTag) {
+//     (void)aead; (void)outAuthTag;
+//     return -174;
+// }
+// #endif
 // #ifndef HAVE_XCHACHA
 // int wc_XChaCha20Poly1305_Encrypt(
 //    byte *dst, size_t dst_space,
@@ -188,4 +220,82 @@ func Wc_XChaCha20Poly1305_Decrypt(outPlain, inCipher, inAAD, inIv, inKey []byte)
                 sanInCipher, C.size_t(len(inCipher)), sanInAAD, C.size_t(len(inAAD)),
                 (*C.uchar)(unsafe.Pointer(&inIv[0])), C.size_t(len(inIv)),
                 (*C.uchar)(unsafe.Pointer(&inKey[0])), C.size_t(len(inKey))))
+}
+
+// ChaChaPoly_Aead is the streaming AEAD state for ChaCha20-Poly1305.
+// State machine: Wc_ChaCha20Poly1305_Init → (Wc_ChaCha20Poly1305_UpdateAad)*
+//   → (Wc_ChaCha20Poly1305_UpdateData)* → Wc_ChaCha20Poly1305_Final.
+// NOT thread-safe. No Free is needed; Final zeroes the struct internally.
+type ChaChaPoly_Aead = C.struct_ChaChaPoly_Aead
+
+// Wc_ChaCha20Poly1305_Init initialises aead for encryption (isEncrypt != 0)
+// or decryption (isEncrypt == 0). key must be exactly
+// CHACHA20_POLY1305_AEAD_KEYSIZE bytes; iv must be exactly
+// CHACHA20_POLY1305_AEAD_IV_SIZE bytes. Returns 0 on success.
+func Wc_ChaCha20Poly1305_Init(aead *ChaChaPoly_Aead, key, iv []byte, isEncrypt int) int {
+    if len(key) < CHACHA20_POLY1305_AEAD_KEYSIZE {
+        return -173
+    }
+    if len(iv) < CHACHA20_POLY1305_AEAD_IV_SIZE {
+        return -173
+    }
+    return int(C.wc_ChaCha20Poly1305_Init_shim(
+        aead,
+        (*C.uchar)(unsafe.Pointer(&key[0])),
+        (*C.uchar)(unsafe.Pointer(&iv[0])),
+        C.int(isEncrypt),
+    ))
+}
+
+// Wc_ChaCha20Poly1305_UpdateAad feeds additional authenticated data into the
+// AEAD state. Must be called after Init and before any UpdateData call.
+// inAADLen must be <= len(inAAD). Returns 0 on success.
+func Wc_ChaCha20Poly1305_UpdateAad(aead *ChaChaPoly_Aead, inAAD []byte, inAADLen int) int {
+    if inAADLen < 0 || inAADLen > len(inAAD) {
+        return -173
+    }
+    var sanInAAD *C.uchar
+    if inAADLen > 0 {
+        sanInAAD = (*C.uchar)(unsafe.Pointer(&inAAD[0]))
+    } else {
+        sanInAAD = (*C.uchar)(unsafe.Pointer(nil))
+    }
+    return int(C.wc_ChaCha20Poly1305_UpdateAad(aead, sanInAAD, C.word32(inAADLen)))
+}
+
+// Wc_ChaCha20Poly1305_UpdateData encrypts or decrypts inDataLen bytes from
+// inData into outData. inData and outData may alias (in-place). outData must
+// be at least inDataLen bytes. inDataLen must be <= len(inData).
+// If inDataLen is 0, returns 0 immediately without advancing internal state.
+// Returns 0 on success.
+func Wc_ChaCha20Poly1305_UpdateData(aead *ChaChaPoly_Aead, inData []byte, inDataLen int, outData []byte) int {
+    if inDataLen < 0 || inDataLen > len(inData) {
+        return -173
+    }
+    if len(outData) < inDataLen {
+        return -173
+    }
+    if inDataLen == 0 {
+        return 0
+    }
+    return int(C.wc_ChaCha20Poly1305_UpdateData(
+        aead,
+        (*C.uchar)(unsafe.Pointer(&inData[0])),
+        (*C.uchar)(unsafe.Pointer(&outData[0])),
+        C.word32(inDataLen),
+    ))
+}
+
+// Wc_ChaCha20Poly1305_Final finalises the AEAD operation and writes the
+// 16-byte authentication tag into outAuthTag, which must be at least
+// CHACHA20_POLY1305_AEAD_AUTHTAG_SIZE bytes. The struct is zeroed by wolfSSL
+// on completion; do not call Free afterwards. Returns 0 on success.
+func Wc_ChaCha20Poly1305_Final(aead *ChaChaPoly_Aead, outAuthTag []byte) int {
+    if len(outAuthTag) < CHACHA20_POLY1305_AEAD_AUTHTAG_SIZE {
+        return -173
+    }
+    return int(C.wc_ChaCha20Poly1305_Final_shim(
+        aead,
+        (*C.uchar)(unsafe.Pointer(&outAuthTag[0])),
+    ))
 }
