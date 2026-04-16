@@ -269,6 +269,10 @@ const (
 	ED25519_PRV_KEY_SIZE = int(C.ED25519_PRV_KEY_SIZE)
 )
 
+// ed25519EmptyMsg is a non-nil backing for zero-length message slices.
+// wolfSSL rejects NULL in/msg pointers even when inLen == 0.
+var ed25519EmptyMsg [1]byte
+
 // Wc_Ed25519Init initializes an ed25519_key struct.
 // Returns 0 on success, negative on error.
 func Wc_Ed25519Init(key *C.struct_ed25519_key) int {
@@ -323,6 +327,8 @@ func Wc_Ed25519SignMsg(key *C.struct_ed25519_key, in []byte, inSz int, out []byt
 	var inPtr *C.byte
 	if len(in) > 0 {
 		inPtr = (*C.byte)(unsafe.Pointer(&in[0]))
+	} else {
+		inPtr = (*C.byte)(unsafe.Pointer(&ed25519EmptyMsg[0]))
 	}
 	cOutSz := C.word32(len(out))
 	ret := int(C.go_wc_ed25519_sign_msg(
@@ -353,6 +359,8 @@ func Wc_Ed25519CtxSignMsg(key *C.struct_ed25519_key, in []byte, inSz int, out []
 	var inPtr *C.byte
 	if len(in) > 0 {
 		inPtr = (*C.byte)(unsafe.Pointer(&in[0]))
+	} else {
+		inPtr = (*C.byte)(unsafe.Pointer(&ed25519EmptyMsg[0]))
 	}
 	cOutSz := C.word32(len(out))
 	var ctxPtr *C.byte
@@ -387,6 +395,8 @@ func Wc_Ed25519PhSignMsg(key *C.struct_ed25519_key, in []byte, inSz int, out []b
 	var inPtr *C.byte
 	if len(in) > 0 {
 		inPtr = (*C.byte)(unsafe.Pointer(&in[0]))
+	} else {
+		inPtr = (*C.byte)(unsafe.Pointer(&ed25519EmptyMsg[0]))
 	}
 	cOutSz := C.word32(len(out))
 	var ctxPtr *C.byte
@@ -419,6 +429,8 @@ func Wc_Ed25519VerifyMsg(sig []byte, sigLen int, msg []byte, msgLen int, res *in
 	var msgPtr *C.byte
 	if len(msg) > 0 {
 		msgPtr = (*C.byte)(unsafe.Pointer(&msg[0]))
+	} else {
+		msgPtr = (*C.byte)(unsafe.Pointer(&ed25519EmptyMsg[0]))
 	}
 	cRes := C.int(0)
 	ret := int(C.go_wc_ed25519_verify_msg(
@@ -452,6 +464,8 @@ func Wc_Ed25519CtxVerifyMsg(sig []byte, sigLen int, msg []byte, msgLen int, res 
 	var msgPtr *C.byte
 	if len(msg) > 0 {
 		msgPtr = (*C.byte)(unsafe.Pointer(&msg[0]))
+	} else {
+		msgPtr = (*C.byte)(unsafe.Pointer(&ed25519EmptyMsg[0]))
 	}
 	cRes := C.int(0)
 	var ctxPtr *C.byte
@@ -489,6 +503,8 @@ func Wc_Ed25519PhVerifyMsg(sig []byte, sigLen int, msg []byte, msgLen int, res *
 	var msgPtr *C.byte
 	if len(msg) > 0 {
 		msgPtr = (*C.byte)(unsafe.Pointer(&msg[0]))
+	} else {
+		msgPtr = (*C.byte)(unsafe.Pointer(&ed25519EmptyMsg[0]))
 	}
 	cRes := C.int(0)
 	var ctxPtr *C.byte
